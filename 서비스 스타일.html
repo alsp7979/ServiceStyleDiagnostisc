@@ -1,0 +1,1033 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CS Style Solution - 서비스 마인드 종합 진단</title>
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- FontAwesome for Premium Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <!-- Google Fonts Inter & Pretendard-like System Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif;
+    }
+    /* Custom radio-like transition effects */
+    .option-btn {
+      transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    /* Hidden checkboxes */
+    input[type="radio"] {
+      display: none;
+    }
+    /* Printing optimization */
+    @media print {
+      body {
+        background: white !important;
+        color: black !important;
+      }
+      .no-print {
+        display: none !important;
+      }
+      .print-card {
+        border: 1px solid #e2e8f0 !important;
+        box-shadow: none !important;
+        background: white !important;
+        width: 100% !important;
+        max-width: 100% !important;
+        margin: 0 !important;
+        padding: 1.5rem !important;
+      }
+      .print-page-break {
+        page-break-inside: avoid;
+      }
+    }
+  </style>
+</head>
+<body class="bg-slate-50 min-h-screen flex flex-col justify-between text-slate-800 antialiased selection:bg-indigo-100 selection:text-indigo-900">
+
+  <!-- Navigation Header -->
+  <header class="no-print bg-white border-b border-slate-100 sticky top-0 z-40 backdrop-blur-md bg-white/90">
+    <div class="max-w-5xl mx-auto px-4 py-4 flex items-center justify-between">
+      <div class="flex items-center gap-2.5">
+        <span class="flex items-center justify-center w-10 h-10 rounded-xl bg-gradient-to-tr from-indigo-600 to-violet-500 text-white shadow-md shadow-indigo-100">
+          <i class="fa-solid fa-clipboard-user text-lg"></i>
+        </span>
+        <div>
+          <h1 class="font-extrabold text-slate-900 leading-tight">CS Style Solution</h1>
+          <p class="text-[10px] text-slate-500 font-medium tracking-wide uppercase">Service Mind Assessment</p>
+        </div>
+      </div>
+      <div class="flex items-center gap-2">
+        <span class="text-xs bg-indigo-50 text-indigo-700 font-semibold px-2.5 py-1 rounded-full border border-indigo-100">
+          신뢰도 100% 자가 진단
+        </span>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Content Body -->
+  <main class="flex-grow max-w-4xl w-full mx-auto px-4 py-6 md:py-10 flex flex-col justify-center">
+
+    <!-- SECTION 1: Welcome/Intro Screen -->
+    <section id="section-intro" class="no-print bg-white rounded-3xl border border-slate-100 shadow-xl shadow-slate-200/50 p-6 md:p-10 text-center transition-all duration-300">
+      <div class="max-w-2xl mx-auto">
+        <div class="inline-flex items-center justify-center w-20 h-20 rounded-2xl bg-indigo-50 text-indigo-600 mb-6 border border-indigo-100/50 animate-bounce">
+          <i class="fa-solid fa-compass-drafting text-4xl"></i>
+        </div>
+        <h2 class="text-3xl md:text-4xl font-extrabold text-slate-900 tracking-tight leading-tight">
+          내 서비스 마인드 진단<br class="hidden sm:inline" /> <span class="text-transparent bg-clip-text bg-gradient-to-r from-indigo-600 to-violet-600">나의 CS 스타일은?</span>
+        </h2>
+        <p class="mt-4 text-slate-600 text-base md:text-lg leading-relaxed">
+          고객을 대할 때 드러나는 나만의 숨겨진 행동 성향과 소통 스타일을 과학적으로 분석합니다. 30가지 문항에 솔직하게 답하고, 강점 분석과 성장 가이드라인을 확인해 보세요.
+        </p>
+
+        <!-- Information Cards -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 my-8 text-left">
+          <div class="p-4 rounded-2xl bg-slate-50 border border-slate-100 hover:border-indigo-100 transition-colors">
+            <div class="w-8 h-8 rounded-lg bg-indigo-100 text-indigo-700 flex items-center justify-center mb-3">
+              <i class="fa-solid fa-list-check"></i>
+            </div>
+            <h4 class="font-bold text-slate-800 text-sm">30개 정밀 문항</h4>
+            <p class="text-xs text-slate-500 mt-1">CS 전문가들이 분석하는 다차원 행동 양식 문항 탑재</p>
+          </div>
+          <div class="p-4 rounded-2xl bg-slate-50 border border-slate-100 hover:border-emerald-100 transition-colors">
+            <div class="w-8 h-8 rounded-lg bg-emerald-100 text-emerald-700 flex items-center justify-center mb-3">
+              <i class="fa-solid fa-chart-pie"></i>
+            </div>
+            <h4 class="font-bold text-slate-800 text-sm">5대 핵심 유형 분석</h4>
+            <p class="text-xs text-slate-500 mt-1">해결사형부터 동반자형까지, 5가지 CS 축 합산 결과 도출</p>
+          </div>
+          <div class="p-4 rounded-2xl bg-slate-50 border border-slate-100 hover:border-violet-100 transition-colors">
+            <div class="w-8 h-8 rounded-lg bg-violet-100 text-violet-700 flex items-center justify-center mb-3">
+              <i class="fa-solid fa-wand-magic-sparkles"></i>
+            </div>
+            <h4 class="font-bold text-slate-800 text-sm">맞춤 성장 가이드</h4>
+            <p class="text-xs text-slate-500 mt-1">강점 보완 전략 및 실천 가이드 제시로 전문성 강화</p>
+          </div>
+        </div>
+
+        <!-- Start Form / Button -->
+        <div class="bg-indigo-50/50 rounded-2xl p-5 border border-indigo-100/60 mb-8 max-w-lg mx-auto text-left">
+          <label for="user-name" class="block text-xs font-bold text-indigo-900 mb-1.5 uppercase tracking-wider">나만의 보고서를 위한 이름 입력 (선택)</label>
+          <input type="text" id="user-name" placeholder="이름을 입력하면 커스텀 보고서가 발급됩니다" class="w-full px-4 py-3 rounded-xl border border-indigo-200/80 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none text-sm transition-all" />
+        </div>
+
+        <button onclick="startSurvey()" class="inline-flex items-center justify-center gap-2.5 bg-gradient-to-r from-indigo-600 to-violet-600 hover:from-indigo-700 hover:to-violet-700 text-white font-bold text-lg px-8 py-4 rounded-2xl shadow-lg shadow-indigo-100 hover:shadow-xl hover:-translate-y-0.5 transition-all duration-200 w-full sm:w-auto">
+          진단 시작하기 <i class="fa-solid fa-arrow-right"></i>
+        </button>
+      </div>
+    </section>
+
+    <!-- SECTION 2: Survey Container -->
+    <section id="section-survey" class="no-print hidden bg-white rounded-3xl border border-slate-100 shadow-xl shadow-slate-200/50 p-4 md:p-8 transition-all duration-300">
+      
+      <!-- Top Progress Panel -->
+      <div class="mb-6 md:mb-8 bg-slate-50 rounded-2xl p-4 border border-slate-100">
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-3">
+          <div class="flex items-center gap-2">
+            <span id="page-indicator" class="text-xs bg-indigo-600 text-white font-bold px-2.5 py-1 rounded-lg">1 / 6 단계</span>
+            <span class="text-xs text-slate-500 font-semibold">(5문항씩 진행)</span>
+          </div>
+          <span id="percent-indicator" class="text-sm font-extrabold text-indigo-700">0% 완료</span>
+        </div>
+        <div class="w-full bg-slate-200 rounded-full h-2.5 overflow-hidden">
+          <div id="progress-bar" class="bg-gradient-to-r from-indigo-600 to-violet-500 h-full rounded-full w-0 transition-all duration-300"></div>
+        </div>
+      </div>
+
+      <!-- Question List Container -->
+      <div id="questions-container" class="space-y-6 md:space-y-8">
+        <!-- Dynamic Questions Rendered by JS -->
+      </div>
+
+      <!-- Navigation Controls -->
+      <div class="mt-8 pt-6 border-t border-slate-100 flex items-center justify-between gap-4">
+        <button id="btn-prev" onclick="prevPage()" class="flex items-center gap-2 px-5 py-3 rounded-xl border border-slate-200 text-slate-600 font-bold hover:bg-slate-50 transition-colors disabled:opacity-40 disabled:pointer-events-none">
+          <i class="fa-solid fa-chevron-left text-sm"></i> 이전 단계
+        </button>
+        <button id="btn-next" onclick="nextPage()" class="flex items-center gap-2 px-6 py-3 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white font-bold shadow-md shadow-indigo-100 hover:shadow-lg transition-all">
+          다음 단계 <i class="fa-solid fa-chevron-right text-sm"></i>
+        </button>
+      </div>
+    </section>
+
+    <!-- SECTION 3: Animated Loading Screen -->
+    <section id="section-loading" class="no-print hidden flex flex-col items-center justify-center text-center p-8 py-20 bg-white rounded-3xl border border-slate-100 shadow-xl">
+      <div class="relative w-24 h-24 mb-6">
+        <!-- Outer Glowing Spin -->
+        <div class="absolute inset-0 rounded-full border-4 border-slate-100 border-t-indigo-600 animate-spin"></div>
+        <!-- Inner Opposite Spin -->
+        <div class="absolute inset-2 rounded-full border-4 border-slate-100 border-b-violet-500 animate-spin" style="animation-direction: reverse; animation-duration: 1s;"></div>
+        <!-- Core Icon -->
+        <div class="absolute inset-0 flex items-center justify-center text-indigo-600">
+          <i class="fa-solid fa-brain text-2xl animate-pulse"></i>
+        </div>
+      </div>
+      <h3 class="text-xl font-bold text-slate-800 mb-2">CS 응답 데이터를 종합 연산하는 중입니다</h3>
+      <p id="loading-status-text" class="text-sm text-slate-500 font-medium">유형별 자가 진단 점수 추출 중...</p>
+    </section>
+
+    <!-- SECTION 4: Comprehensive Result Dashboard -->
+    <section id="section-result" class="hidden space-y-6 md:space-y-8 animate-fade-in print-card">
+      
+      <!-- Top Banner / User Welcome Card -->
+      <div class="bg-gradient-to-tr from-slate-900 via-indigo-950 to-indigo-900 text-white rounded-3xl p-6 md:p-10 shadow-xl relative overflow-hidden">
+        <!-- Background decorative vectors -->
+        <div class="absolute -right-16 -bottom-16 w-64 h-64 rounded-full bg-indigo-500/10 blur-3xl no-print"></div>
+        <div class="absolute -left-16 -top-16 w-64 h-64 rounded-full bg-violet-500/10 blur-3xl no-print"></div>
+        
+        <div class="relative flex flex-col md:flex-row md:items-center justify-between gap-6">
+          <div class="space-y-3">
+            <span class="no-print inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-white/10 border border-white/20 text-indigo-200">
+              <i class="fa-solid fa-certificate"></i> 진단 결과 보고서
+            </span>
+            <h2 class="text-2xl md:text-3.5xl font-extrabold tracking-tight">
+              <span id="result-user-name" class="text-indigo-300">고객</span> 님의 서비스 마인드 유형
+            </h2>
+            <p class="text-sm md:text-base text-slate-300 leading-relaxed max-w-xl" id="result-summary-intro">
+              고객을 대할 때 드러나는 핵심 지향점과 소통 스타일 분석 결과, 아래의 핵심 스타일이 당신의 CS 주력 에너지인 것으로 판정되었습니다.
+            </p>
+          </div>
+          <!-- Primary Badge Box -->
+          <div class="flex-shrink-0 flex flex-col items-center bg-white/10 border border-white/15 backdrop-blur-md px-6 py-6 rounded-2xl text-center md:max-w-[240px]">
+            <span class="text-xs uppercase tracking-widest text-indigo-300 font-extrabold mb-1">최고 발달 스타일</span>
+            <div id="primary-badge-container" class="text-xl md:text-2xl font-black text-white px-4 py-1.5 bg-indigo-600 rounded-xl shadow-lg border border-indigo-500">
+              -
+            </div>
+            <span class="text-[10px] text-slate-400 mt-2">※ 동점일 경우 알파벳 순 배정</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Profile breakdown: Score Comparative Bar Charts -->
+      <div class="bg-white rounded-3xl border border-slate-100 shadow-md p-6 md:p-8">
+        <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 mb-6">
+          <div>
+            <h3 class="text-lg md:text-xl font-extrabold text-slate-950 flex items-center gap-2">
+              <i class="fa-solid fa-chart-column text-indigo-600"></i> 내 CS 5대 스타일 지표
+            </h3>
+            <p class="text-xs text-slate-500 mt-0.5">최저 6점 ~ 최고 30점 척도 범위 내 환산치</p>
+          </div>
+          <div class="no-print bg-slate-50 border border-slate-100 px-3 py-1.5 rounded-xl text-xs font-semibold text-slate-600">
+            총점 150점 만점 대비 분석
+          </div>
+        </div>
+
+        <!-- Detailed Bars Stack -->
+        <div class="space-y-5" id="charts-wrapper">
+          <!-- Dynamic Bars will be appended here -->
+        </div>
+
+        <!-- Metric Balance Analysis Text -->
+        <div class="mt-8 pt-6 border-t border-slate-100 grid grid-cols-1 md:grid-cols-2 gap-4 text-xs text-slate-600">
+          <div class="flex gap-2.5 items-start bg-emerald-50/50 p-3 rounded-xl border border-emerald-100/50">
+            <i class="fa-solid fa-circle-check text-emerald-600 text-sm mt-0.5"></i>
+            <div>
+              <span class="font-extrabold text-slate-800">최강 강점 스케일</span>
+              <p class="mt-0.5 text-slate-600" id="strongest-type-summary">-</p>
+            </div>
+          </div>
+          <div class="flex gap-2.5 items-start bg-amber-50/50 p-3 rounded-xl border border-amber-100/50">
+            <i class="fa-solid fa-circle-exclamation text-amber-600 text-sm mt-0.5"></i>
+            <div>
+              <span class="font-extrabold text-slate-800">집중 보완 필요 항목</span>
+              <p class="mt-0.5 text-slate-600" id="weakest-type-summary">-</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Primary Core Style Details -->
+      <div class="bg-white rounded-3xl border border-slate-100 shadow-md overflow-hidden" id="primary-details-card">
+        <div class="p-6 md:p-8 border-b border-slate-100 bg-gradient-to-r from-slate-50 to-white">
+          <div class="flex items-center gap-3 mb-2">
+            <span class="px-2.5 py-1 text-xs font-bold rounded-md uppercase" id="primary-type-label">TYPE X</span>
+            <span class="text-sm font-semibold text-slate-500">가장 대표적인 행동 성향</span>
+          </div>
+          <h3 class="text-xl md:text-2xl font-black text-slate-900" id="primary-title">
+            -
+          </h3>
+          <p class="text-sm text-slate-600 mt-2 font-medium" id="primary-tagline">
+            -
+          </p>
+        </div>
+        
+        <div class="p-6 md:p-8 space-y-6">
+          <div>
+            <h4 class="font-extrabold text-slate-900 text-sm flex items-center gap-2 mb-2">
+              <span class="w-1.5 h-3.5 bg-indigo-600 rounded-full"></span> 종합 개요 및 소통 특징
+            </h4>
+            <p class="text-sm text-slate-600 leading-relaxed bg-slate-50 p-4 rounded-xl" id="primary-desc">
+              -
+            </p>
+          </div>
+
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <!-- Strengths -->
+            <div class="p-4 rounded-2xl border border-emerald-100 bg-emerald-50/20">
+              <h4 class="font-bold text-emerald-900 text-sm flex items-center gap-2 mb-2">
+                <i class="fa-solid fa-arrow-up-right-dots"></i> 뛰어난 강점 영역 (Strengths)
+              </h4>
+              <ul class="text-xs text-slate-600 space-y-2 list-disc pl-4" id="primary-strengths">
+                <!-- JS Inject -->
+              </ul>
+            </div>
+            <!-- Weaknesses -->
+            <div class="p-4 rounded-2xl border border-rose-100 bg-rose-50/20">
+              <h4 class="font-bold text-rose-900 text-sm flex items-center gap-2 mb-2">
+                <i class="fa-solid fa-triangle-exclamation"></i> 주의해야 할 취약 영역 (Risks)
+              </h4>
+              <ul class="text-xs text-slate-600 space-y-2 list-disc pl-4" id="primary-weaknesses">
+                <!-- JS Inject -->
+              </ul>
+            </div>
+          </div>
+
+          <!-- Growth Tips -->
+          <div class="border-t border-slate-100 pt-6">
+            <h4 class="font-extrabold text-indigo-950 text-sm flex items-center gap-2 mb-3">
+              <i class="fa-solid fa-wand-magic-sparkles text-indigo-600"></i> 더 위대한 CS 프로로 발돋움하기 위한 실천 전략 (Action Plan)
+            </h4>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-3.5" id="primary-growth-items">
+              <!-- JS Inject -->
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Entire 5 Styles Table / Reference Block -->
+      <div class="bg-white rounded-3xl border border-slate-100 shadow-md p-6 md:p-8 print-page-break">
+        <h3 class="text-lg md:text-xl font-extrabold text-slate-900 flex items-center gap-2 mb-4">
+          <i class="fa-solid fa-folder-open text-slate-500"></i> 전체 5가지 CS 스타일 레퍼런스
+        </h3>
+        <p class="text-xs text-slate-500 mb-6">나뿐만 아니라 타 동료들의 다양한 CS 관점과 조율력을 높이기 위한 설명서입니다.</p>
+
+        <div class="space-y-4">
+          <!-- Item A -->
+          <div class="p-4 rounded-xl border border-slate-100 bg-slate-50/50 flex flex-col md:flex-row gap-4 justify-between items-start md:items-center">
+            <div class="space-y-1">
+              <div class="flex items-center gap-2">
+                <span class="px-2 py-0.5 text-[10px] font-bold rounded bg-indigo-100 text-indigo-700">Type A</span>
+                <span class="font-extrabold text-sm text-slate-900">신속명쾌 해결사형</span>
+              </div>
+              <p class="text-xs text-slate-600">고객의 니즈를 빠르게 분석하여 가장 전문적이고 결단력 있게 해답을 해결해 줍니다.</p>
+            </div>
+            <span class="text-[10px] font-bold text-indigo-700 bg-indigo-50 border border-indigo-100 px-2.5 py-1 rounded-full whitespace-nowrap">신속성 / 주도형</span>
+          </div>
+
+          <!-- Item B -->
+          <div class="p-4 rounded-xl border border-slate-100 bg-slate-50/50 flex flex-col md:flex-row gap-4 justify-between items-start md:items-center">
+            <div class="space-y-1">
+              <div class="flex items-center gap-2">
+                <span class="px-2 py-0.5 text-[10px] font-bold rounded bg-emerald-100 text-emerald-700">Type B</span>
+                <span class="font-extrabold text-sm text-slate-900">친근사교 호감형</span>
+              </div>
+              <p class="text-xs text-slate-600">친한 친구를 대하듯 유쾌하고 매력적인 에너지로 장벽을 허물고 유대감을 형성합니다.</p>
+            </div>
+            <span class="text-[10px] font-bold text-emerald-700 bg-emerald-50 border border-emerald-100 px-2.5 py-1 rounded-full whitespace-nowrap">소통성 / 관계형</span>
+          </div>
+
+          <!-- Item C -->
+          <div class="p-4 rounded-xl border border-slate-100 bg-slate-50/50 flex flex-col md:flex-row gap-4 justify-between items-start md:items-center">
+            <div class="space-y-1">
+              <div class="flex items-center gap-2">
+                <span class="px-2 py-0.5 text-[10px] font-bold rounded bg-violet-100 text-violet-700">Type C</span>
+                <span class="font-extrabold text-sm text-slate-900">격식신중 원칙형</span>
+              </div>
+              <p class="text-xs text-slate-600">철저한 예의, 프로 매너, 객관적 원칙을 기반으로 안정적이고 격조 높은 인상을 남깁니다.</p>
+            </div>
+            <span class="text-[10px] font-bold text-violet-700 bg-violet-50 border border-violet-100 px-2.5 py-1 rounded-full whitespace-nowrap">체계성 / 원칙형</span>
+          </div>
+
+          <!-- Item D -->
+          <div class="p-4 rounded-xl border border-slate-100 bg-slate-50/50 flex flex-col md:flex-row gap-4 justify-between items-start md:items-center">
+            <div class="space-y-1">
+              <div class="flex items-center gap-2">
+                <span class="px-2 py-0.5 text-[10px] font-bold rounded bg-amber-100 text-amber-700">Type D</span>
+                <span class="font-extrabold text-sm text-slate-900">수동조심 지원형</span>
+              </div>
+              <p class="text-xs text-slate-600">사고 방지를 최우선으로, 침착하게 경청하고 한 번 더 확인하여 실수를 최소화합니다.</p>
+            </div>
+            <span class="text-[10px] font-bold text-amber-700 bg-amber-50 border border-amber-100 px-2.5 py-1 rounded-full whitespace-nowrap">경청성 / 신중형</span>
+          </div>
+
+          <!-- Item E -->
+          <div class="p-4 rounded-xl border border-slate-100 bg-slate-50/50 flex flex-col md:flex-row gap-4 justify-between items-start md:items-center">
+            <div class="space-y-1">
+              <div class="flex items-center gap-2">
+                <span class="px-2 py-0.5 text-[10px] font-bold rounded bg-pink-100 text-pink-700">Type E</span>
+                <span class="font-extrabold text-sm text-slate-900">감동헌신 정성형</span>
+              </div>
+              <p class="text-xs text-slate-600">기대를 뛰어넘는 소소한 배려와 헌신적인 태도로 고객에게 오랜 감동을 선물합니다.</p>
+            </div>
+            <span class="text-[10px] font-bold text-pink-700 bg-pink-50 border border-pink-100 px-2.5 py-1 rounded-full whitespace-nowrap">공감성 / 감동형</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Action Center (Report Copy, PDF Print, Retake) -->
+      <div class="no-print bg-slate-100 p-6 rounded-3xl flex flex-col sm:flex-row gap-4 items-center justify-between">
+        <div class="text-center sm:text-left space-y-0.5">
+          <h4 class="font-extrabold text-slate-900 text-sm">진단 결과를 보관하고 싶으신가요?</h4>
+          <p class="text-xs text-slate-500">클립보드에 요약글을 복사하거나 PDF 파일로 인쇄하여 소장하세요.</p>
+        </div>
+        <div class="flex flex-wrap items-center justify-center gap-3">
+          <button onclick="copyToClipboard()" class="flex items-center gap-2 bg-white text-slate-700 hover:text-indigo-600 font-bold text-sm px-4.5 py-3 rounded-xl border border-slate-200 hover:border-indigo-200 transition-all">
+            <i class="fa-solid fa-copy"></i> 텍스트 요약 복사
+          </button>
+          <button onclick="window.print()" class="flex items-center gap-2 bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-sm px-5 py-3 rounded-xl shadow-md shadow-indigo-100 transition-all">
+            <i class="fa-solid fa-print"></i> PDF 저장 및 인쇄
+          </button>
+          <button onclick="restartQuiz()" class="flex items-center gap-2 bg-slate-800 hover:bg-slate-900 text-white font-bold text-sm px-4.5 py-3 rounded-xl transition-all">
+            <i class="fa-solid fa-rotate-left"></i> 다시 진단하기
+          </button>
+        </div>
+      </div>
+
+    </section>
+
+  </main>
+
+  <!-- Footer Disclaimer -->
+  <footer class="no-print bg-slate-900 text-slate-500 text-xs text-center py-6 border-t border-slate-800 mt-10">
+    <div class="max-w-4xl mx-auto px-4 space-y-1.5">
+      <p class="font-semibold text-slate-400">CS Style Solution © 2026. All Rights Reserved.</p>
+      <p class="max-w-lg mx-auto leading-relaxed">본 테스트는 서비스 현장 대응능력과 마인드셋 향상을 위해 제작된 자가 진단 피드백 도구입니다. 진단 결과는 주관적인 성향 분석이므로 교육 및 개선 목적으로 참고하십시오.</p>
+    </div>
+  </footer>
+
+  <!-- Toast Message container -->
+  <div id="toast-message" class="no-print fixed bottom-6 left-1/2 -translate-x-1/2 z-50 bg-slate-900/95 text-white text-xs font-bold py-3.5 px-6 rounded-2xl shadow-xl flex items-center gap-2.5 opacity-0 pointer-events-none transition-all duration-300 transform translate-y-2">
+    <i class="fa-solid fa-bell text-yellow-400"></i>
+    <span id="toast-text">메시지가 표시됩니다.</span>
+  </div>
+
+  <!-- JavaScript Logical Implementation -->
+  <script>
+    // System Config of Questions
+    const questions = [
+      { id: 1, text: "본인 욕구를 모른 채 오는 고객들이 많다.", category: "A" },
+      { id: 2, text: "매출 정도나 대상에 따른 차별대우는 당연하다.", category: "C" },
+      { id: 3, text: "고객들은 대부분 정성스럽고, 꼼꼼한 대우를 바란다.", category: "E" },
+      { id: 4, text: "고객에게 먼저 농담이나 친밀감 있는 표현을 잘 건네는 편이다.", category: "B" },
+      { id: 5, text: "고객들이 뭔가 물어 올 때 피곤함을 느낄 때가 있다.", category: "D" },
+      { id: 6, text: "친한 친구 대하듯 고객을 대한다는 소리를 듣는다.", category: "B" },
+      { id: 7, text: "고객을 극진하게 대우하는 편이다.", category: "E" },
+      { id: 8, text: "직원도 격식이 있어야 한다.", category: "C" },
+      { id: 9, text: "고객의 요청이 맞는지 몇 번이나 확인한다.", category: "D" },
+      { id: 10, text: "고객이 묻는 모든 것에 대답할 자신이 있다.", category: "A" },
+      { id: 11, text: "고객에게 어디까지 해줘야 하는지 모르겠다.", category: "D" },
+      { id: 12, text: "지나치게 개인적인 말을 하거나, 참견하는 고객은 달갑지 않다.", category: "C" },
+      { id: 13, text: "고객의 소소한 상황까지 챙겨 고객이 놀랄 때가 있다.", category: "E" },
+      { id: 14, text: "고객과 말이 겹치는 경우가 많다.", category: "A" },
+      { id: 15, text: "고객에게 칭찬이나 극찬을 잘하는 편이다.", category: "B" },
+      { id: 16, text: "바라고 한 건 아닌데, 감사 인사나 감동했다는 말을 듣기도 한다.", category: "E" },
+      { id: 17, text: "평소 소극적이라 상대가 말을 건네주길 바란다.", category: "D" },
+      { id: 18, text: "매사에 신중하고 쉽게 보이는 스타일이 아니다.", category: "C" },
+      { id: 19, text: "내 설명은 명쾌하고 믿을 만하다.", category: "A" },
+      { id: 20, text: "재미있게 말을 잘하는 편이다.", category: "B" },
+      { id: 21, text: "종종 차가운 인상이고 쉽지가 않아 보인다는 말을 듣는다.", category: "C" },
+      { id: 22, text: "고객에게 쉽게 말을 잘 거는 편이다.", category: "B" },
+      { id: 23, text: "고객이 따지며 문제 제기할 때, 대답을 못할 때도 많다.", category: "D" },
+      { id: 24, text: "결국 고객은 정성을 산다.", category: "E" },
+      { id: 25, text: "고객이 뭘 원하는지 '아' 하면 '척' 한다.", category: "A" },
+      { id: 26, text: "장난이나 친근함에 정색하는 고객 때문에 언짢은 적이 있다.", category: "B" },
+      { id: 27, text: "종종 고객들은 나의 친절에 당황해한다.", category: "E" },
+      { id: 28, text: "고객을 조심스럽게 대하는 편이다.", category: "D" },
+      { id: 29, text: "고객의 긴 말을 참지 못하고, 말을 끊게 되는 경우가 있다.", category: "A" },
+      { id: 30, text: "나도 모르게 종종 고객을 무시하는 태도를 보일 때가 있다.", category: "C" }
+    ];
+
+    // System Config of CS Style Type Metadata
+    const typeInfo = {
+      A: {
+        title: "신속명쾌 해결사형 (Type A)",
+        badge: "신속명쾌 해결사",
+        tagline: "신속하고 명쾌하게! 고객의 문제를 가장 실용적으로 풀어냅니다.",
+        colorClass: "bg-indigo-600",
+        colorHex: "#4f46e5",
+        description: "고객의 요구사항을 누구보다 신속하게 분석하며, 막힘없고 정돈된 설명을 선호합니다. 비즈니스 마인드와 주도적인 성향이 뛰어나서 불필요한 단계 없이 즉시 대안을 제시하는 해결사 스타일입니다.",
+        strengths: [
+          "높은 소통의 자신감과 확실한 대안 솔루션 가이드라인 제공력",
+          "고객의 질문에 막힘없이 답변할 수 있는 명쾌함과 빠른 판단력",
+          "고객 자신도 모르게 안고 온 진짜 니즈를 일찍 파악해내는 기동성"
+        ],
+        weaknesses: [
+          "답변을 서두르고 과정을 단순화하여 다소 차갑거나 독단적으로 느껴질 위험",
+          "고객의 설명이 조금이라도 길어지거나 중언부언하면 말을 잘라버리는 급함",
+          "사실 위주로 정답만 건네려다 감정 공감을 중요시하는 고객에게 거리감을 주는 요소"
+        ],
+        growth: [
+          "<b>경청의 3초 법칙</b>: 고객이 발언을 마친 후 속으로 1, 2, 3초 센 후 정리를 이어가 보세요.",
+          "<b>쿠션어 윤활유 배치</b>: 핵심을 꺼내기 전 '불편하셨겠지만', '번거로우시겠지만' 등을 덧붙여보세요.",
+          "<b>친절한 피날레</b>: 해결 직후 종결 전에 '더 도울 수 있는 추가 사항이 있으실까요?' 한 줄 질문을 건네세요."
+        ]
+      },
+      B: {
+        title: "친근사교 호감형 (Type B)",
+        badge: "친근사교 호감형",
+        tagline: "친구처럼 상냥하고 유쾌한 소통으로 마음의 벽을 단번에 부숩니다.",
+        colorClass: "bg-emerald-600",
+        colorHex: "#059669",
+        description: "밝은 에너지를 탑재하여 친숙하고 편안한 소통 구도를 가졌습니다. 고객에게 자연스럽게 농담이나 리액션, 친절한 안부 칭찬을 스스럼없이 던져 대화의 온도를 즉시 올릴 줄 아는 관계형 서비스 인재입니다.",
+        strengths: [
+          "어떤 경직된 고객이라도 미소 짓게 만드는 호감 넘치는 리액션과 밝은 소통 톤",
+          "고객의 취향이나 특징을 재치 있게 집어내는 유머러스함과 라포 형성력",
+          "친근함이 기반이 되어 고객들의 친절 지수를 극대화하고 소통을 촉진"
+        ],
+        weaknesses: [
+          "과도하게 유쾌하거나 장난 섞인 톤을 비전문적이고 성의 없다 생각하는 고객과 트러블 우려",
+          "격식과 예의, 사적인 보호막을 세밀히 구분하고 싶어하는 고객을 당황시킬 가능성",
+          "부탁에 대한 선을 넘지 못하여 공적인 규칙이나 예외 승인 요구에 끌려가기 쉬움"
+        ],
+        growth: [
+          "<b>고객별 소통 온도 조절</b>: 차분하거나 사적인 개입을 선호하지 않는 고객에겐 매너 중심의 간결함이 맞춤 약입니다.",
+          "<b>감정적 경계 유지</b>: 호의를 당연하게 생각하거나 반말을 일삼는 고객을 대비해 공적인 거리를 사전 배치하세요.",
+          "<b>완벽한 톤앤매너 설정</b>: 사근사근함 속에 '규격화된 신뢰 전문성'을 단단히 탑재하여 유쾌하되 프로다운 면모를 고수하십시오."
+        ]
+      },
+      C: {
+        title: "격식신중 원칙형 (Type C)",
+        badge: "격식신중 원칙형",
+        tagline: "품격 높은 예의와 흔들리지 않는 규범으로 철저하게 응대합니다.",
+        colorClass: "bg-violet-600",
+        colorHex: "#7c3aed",
+        description: "공적 규격과 품격에 살고 품격에 죽는 비즈니스 원칙 지향 스타일입니다. 친근함을 무기로 장난치기보단 흐트러짐 없는 매너와 정중한 태도로 일관하며 차원 높은 신뢰의 깊이를 구현해 냅니다.",
+        strengths: [
+          "정중하고 지적인 화법과 신사다운 행동 매너로 기업의 품격 가치를 보완",
+          "기준과 규정, 사외 가이드를 철저하게 고수해 사적인 오판이나 고객과의 부적절 분쟁 원천 차단",
+          "격식을 다해 한계선을 제시하므로, 과도한 억지나 비정상 블랙 컨슈머에게 기품 있게 차단"
+        ],
+        weaknesses: [
+          "규정과 법률만 들이대는 기계 같거나 온도가 없는 'AI 로봇' 같은 대화 느낌 부여",
+          "의도하지 않았지만, 직원이 우월감을 느끼고 고객을 무시한다는 편견에 부딪히기 쉬움",
+          "정서적 슬픔이나 속상함을 위로받으려는 고객에게 겉돌며 공감대를 잃고 딱딱한 분위기 연출"
+        ],
+        growth: [
+          "<b>미소와 눈 맞춤의 정비</b>: 완벽하고 지적인 답변 사이에 한결같은 고개 끄덕임과 따뜻한 리액션을 한 조각 얹으세요.",
+          "<b>대안 위주의 거절</b>: '규정상 불가합니다'에 멈추지 않고, '안타깝게도 ~는 어려우나, 차선책으로 ~는 준비 가능합니다'를 쓰세요.",
+          "<b>역지사지의 공감</b>: 사실 중심 판단을 고수하더라도 감정 상태만큼은 '정말 당황스러우셨겠습니다'라고 먼저 공감해 주십시오."
+        ]
+      },
+      D: {
+        title: "수동조심 지원형 (Type D)",
+        badge: "수동조심 지원형",
+        tagline: "완벽한 안전과 경청을 철두철미하게 고수해 실수 없는 길을 만듭니다.",
+        colorClass: "bg-amber-600",
+        colorHex: "#d97706",
+        description: "고객과 다투거나 실수를 저지르는 일을 극도로 지양하는 꼼꼼이 가이드입니다. 조금이라도 확신이 서지 않으면 다시 한번 세부 요건을 성실히 더블 체크하며, 섣부른 장담보다는 규칙적인 절차 준수를 지지합니다.",
+        strengths: [
+          "절대로 실수가 없도록 정성을 다해 다시금 확인하는 정밀함과 성실성",
+          "화가 나거나 따지는 고객들의 모든 불만을 중간 방해 없이 끝까지 경청하는 겸손함",
+          "조심스럽고 예의 바르게 이끄는 순하고 편안한 분위기로 대결 국면 사전 봉쇄"
+        ],
+        weaknesses: [
+          "돌발 사안에서 자율적인 문제 판단력이나 확실한 결정을 보류하여 응대 시간이 한없이 지연됨",
+          "지나친 저자세와 수세적인 태도로 상대에게 쉽게 주도권을 뺏기고 눈치 보기에 급급함",
+          "안내 시 말끝을 '~일 것 같은데요' 등 모호하게 마쳐 도리어 무능력해 보이거나 미덥지 못한 인상을 줌"
+        ],
+        growth: [
+          "<b>당당하게 끝맺는 종결 화법</b>: '~인 것 같습니다'를 쓰지 말고, 정확히 알아본 후 '~입니다'로 자신 있게 선언하십시오.",
+          "<b>주도적 옵션 가이드</b>: 고객의 원망이 두려워 '어떻게 해주길 원하세요?'라고 묻기보다는 'A안과 B안 중 최선이 무엇인지' 제안하십시오.",
+          "<b>신뢰를 키우는 재확인 화법</b>: '잘 모른다'보다 '더 정확한 정보를 전달해 드리고자 제가 1분만 확인하고 답변해 올리겠습니다'로 말하세요."
+        ]
+      },
+      E: {
+        title: "감동헌신 정성형 (Type E)",
+        badge: "감동헌신 정성형",
+        tagline: "디테일이 다른 극상의 친절과 진심 어린 정성으로 고객을 감동시킵니다.",
+        colorClass: "bg-pink-600",
+        colorHex: "#db2777",
+        description: "고객 한 분 한 분께 최선을 다해 헌신하고 마음을 보듬는 지고지순 서비스가 스타일입니다. 상대조차 생각지 못한 마이크로 스펙까지 섬세하게 챙겨 예상 못한 놀라운 감동과 끈끈한 팬덤을 만들어 냅니다.",
+        strengths: [
+          "가장 가슴 깊은 공감 능력으로 고객의 슬픔, 화를 따스하게 녹이는 훌륭한 마음 치유사",
+          "진정에서 우러나는 헌신과 서비스 태도로 가슴 벅찬 감사의 편지나 전폭적인 충성고객 유치",
+          "남에게 도움이 되는 과정에서 본인 역시 충족감을 느끼며 행복한 서비스를 실천"
+        ],
+        weaknesses: [
+          "모든 고객에게 혼신의 힘을 쏟기 때문에 가장 단시간 내에 감정 에너지가 고갈되어 번아웃되기 쉬움",
+          "조용하고 빠른 용건만 마치고 가고 싶은 바쁜 고객에겐 도리어 부담스럽고 불필요한 친절로 오인됨",
+          "1인당 응대하는 평균 속도가 너무 길어져, 전반적인 사내 업무 순환 효율이 떨어지는 부작용"
+        ],
+        growth: [
+          "<b>자가 발전 충전소 구축</b>: 에너지를 100% 소모하기 전 70% 상태에서 친절 밸브를 알맞게 제어할 에방 요령이 필요합니다.",
+          "<b>바쁜 고객을 위한 담백함</b>: 효율만을 갈망하고 말이 급한 상대에겐 장황한 헌신보다 '간결 명료한 결과'를 주는 것이 진짜 배려입니다.",
+          "<b>건강한 감정 방어선</b>: 고객에게 한계를 설정해주지 않으면 기형적인 과잉 요구나 침해를 당하게 됩니다. 나의 안전망을 사수하세요."
+        ]
+      }
+    };
+
+    // App State Management
+    let userName = "고객";
+    let currentPage = 1;
+    const itemsPerPage = 5;
+    const totalPages = 6;
+    const answers = {}; // Store formats like: {questionId: score(1-5)}
+
+    // Initialize & Show Survey
+    function startSurvey() {
+      const nameInput = document.getElementById('user-name').value.trim();
+      if(nameInput) {
+        userName = nameInput;
+      } else {
+        userName = "고객";
+      }
+
+      document.getElementById('section-intro').classList.add('hidden');
+      document.getElementById('section-survey').classList.remove('hidden');
+      currentPage = 1;
+      renderPage();
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    // Render 5 Questions for the current page
+    function renderPage() {
+      const container = document.getElementById('questions-container');
+      container.innerHTML = '';
+
+      const startIndex = (currentPage - 1) * itemsPerPage;
+      const endIndex = startIndex + itemsPerPage;
+      const currentQuestions = questions.slice(startIndex, endIndex);
+
+      // Render Each Question
+      currentQuestions.forEach((q) => {
+        const qCard = document.createElement('div');
+        qCard.className = `question-card p-5 md:p-6 bg-white border border-slate-100 rounded-2xl shadow-sm transition-all duration-300 hover:border-indigo-100 ${answers[q.id] ? 'bg-indigo-50/10 border-indigo-50' : ''}`;
+        qCard.id = `q-card-${q.id}`;
+
+        const isAnswered = answers[q.id] !== undefined;
+
+        qCard.innerHTML = `
+          <div class="flex items-start gap-3">
+            <span class="flex-shrink-0 flex items-center justify-center w-8 h-8 rounded-full ${isAnswered ? 'bg-indigo-600 text-white' : 'bg-slate-100 text-slate-500'} font-bold text-sm tracking-tight transition-colors" id="badge-${q.id}">
+              ${q.id}
+            </span>
+            <p class="text-slate-800 font-bold text-base md:text-lg pt-0.5 leading-snug">
+              ${q.text}
+            </p>
+          </div>
+          
+          <!-- Options Grid -->
+          <div class="mt-6 grid grid-cols-5 gap-1.5 sm:gap-3 max-w-2xl mx-auto">
+            
+            <!-- Option 5: 매우 그렇다 -->
+            <button type="button" onclick="chooseOption(${q.id}, 5)" id="btn-${q.id}-5" class="option-btn py-3.5 px-1 rounded-xl text-center border ${answers[q.id] === 5 ? 'border-emerald-500 bg-emerald-50/50 text-emerald-800 ring-2 ring-emerald-400/20' : 'border-slate-200 bg-white hover:border-emerald-300 hover:bg-emerald-50/20 text-slate-600'}">
+              <span class="block text-[10px] md:text-xs font-bold leading-tight">매우 그렇다</span>
+              <span class="inline-flex mt-2 w-7 h-7 rounded-full items-center justify-center font-bold text-xs ${answers[q.id] === 5 ? 'bg-emerald-600 text-white' : 'bg-slate-100 text-slate-500'} transition-all">5</span>
+            </button>
+
+            <!-- Option 4: 그렇다 -->
+            <button type="button" onclick="chooseOption(${q.id}, 4)" id="btn-${q.id}-4" class="option-btn py-3.5 px-1 rounded-xl text-center border ${answers[q.id] === 4 ? 'border-teal-500 bg-teal-50/50 text-teal-800 ring-2 ring-teal-400/20' : 'border-slate-200 bg-white hover:border-teal-300 hover:bg-teal-50/20 text-slate-600'}">
+              <span class="block text-[10px] md:text-xs font-bold leading-tight">그렇다</span>
+              <span class="inline-flex mt-2 w-7 h-7 rounded-full items-center justify-center font-bold text-xs ${answers[q.id] === 4 ? 'bg-teal-600 text-white' : 'bg-slate-100 text-slate-500'} transition-all">4</span>
+            </button>
+
+            <!-- Option 3: 보통이다 -->
+            <button type="button" onclick="chooseOption(${q.id}, 3)" id="btn-${q.id}-3" class="option-btn py-3.5 px-1 rounded-xl text-center border ${answers[q.id] === 3 ? 'border-slate-400 bg-slate-50 text-slate-800 ring-2 ring-slate-400/20' : 'border-slate-200 bg-white hover:border-slate-300 hover:bg-slate-50 text-slate-600'}">
+              <span class="block text-[10px] md:text-xs font-bold leading-tight">보통이다</span>
+              <span class="inline-flex mt-2 w-7 h-7 rounded-full items-center justify-center font-bold text-xs ${answers[q.id] === 3 ? 'bg-slate-500 text-white' : 'bg-slate-100 text-slate-500'} transition-all">3</span>
+            </button>
+
+            <!-- Option 2: 그렇지 않다 -->
+            <button type="button" onclick="chooseOption(${q.id}, 2)" id="btn-${q.id}-2" class="option-btn py-3.5 px-1 rounded-xl text-center border ${answers[q.id] === 2 ? 'border-orange-500 bg-orange-50/50 text-orange-800 ring-2 ring-orange-400/20' : 'border-slate-200 bg-white hover:border-orange-300 hover:bg-orange-50/20 text-slate-600'}">
+              <span class="block text-[10px] md:text-xs font-bold leading-tight">그렇지 않다</span>
+              <span class="inline-flex mt-2 w-7 h-7 rounded-full items-center justify-center font-bold text-xs ${answers[q.id] === 2 ? 'bg-orange-500 text-white' : 'bg-slate-100 text-slate-500'} transition-all">2</span>
+            </button>
+
+            <!-- Option 1: 매우 그렇지 않다 -->
+            <button type="button" onclick="chooseOption(${q.id}, 1)" id="btn-${q.id}-1" class="option-btn py-3.5 px-1 rounded-xl text-center border ${answers[q.id] === 1 ? 'border-rose-500 bg-rose-50/50 text-rose-800 ring-2 ring-rose-400/20' : 'border-slate-200 bg-white hover:border-rose-300 hover:bg-rose-50/20 text-slate-600'}">
+              <span class="block text-[10px] md:text-xs font-bold leading-tight">매우 아니다</span>
+              <span class="inline-flex mt-2 w-7 h-7 rounded-full items-center justify-center font-bold text-xs ${answers[q.id] === 1 ? 'bg-rose-600 text-white' : 'bg-slate-100 text-slate-500'} transition-all">1</span>
+            </button>
+
+          </div>
+        `;
+        container.appendChild(qCard);
+      });
+
+      // Update Navigation Buttons & Progress Info
+      updateProgress();
+    }
+
+    // Option Button Click Handler
+    function chooseOption(questionId, score) {
+      answers[questionId] = score;
+
+      // Update UI Styling for Option buttons under this question
+      const options = [1, 2, 3, 4, 5];
+      const colors = {
+        5: 'border-emerald-500 bg-emerald-50/50 text-emerald-800 ring-emerald-400/20',
+        4: 'border-teal-500 bg-teal-50/50 text-teal-800 ring-teal-400/20',
+        3: 'border-slate-400 bg-slate-50 text-slate-800 ring-slate-400/20',
+        2: 'border-orange-500 bg-orange-50/50 text-orange-800 ring-orange-400/20',
+        1: 'border-rose-500 bg-rose-50/50 text-rose-800 ring-rose-400/20'
+      };
+      const badgeColors = {
+        5: 'bg-emerald-600 text-white',
+        4: 'bg-teal-600 text-white',
+        3: 'bg-slate-500 text-white',
+        2: 'bg-orange-500 text-white',
+        1: 'bg-rose-600 text-white'
+      };
+
+      options.forEach(opt => {
+        const btn = document.getElementById(`btn-${questionId}-${opt}`);
+        const badge = btn.querySelector('span:last-child');
+        
+        if (opt === score) {
+          btn.className = `option-btn py-3.5 px-1 rounded-xl text-center border ring-2 ${colors[opt]}`;
+          badge.className = `inline-flex mt-2 w-7 h-7 rounded-full items-center justify-center font-bold text-xs ${badgeColors[opt]} transition-all`;
+        } else {
+          btn.className = `option-btn py-3.5 px-1 rounded-xl text-center border border-slate-200 bg-white text-slate-600 hover:opacity-90`;
+          // Dynamically calculate individual hover color mappings based on which button it is
+          if(opt === 5) btn.className += ' hover:border-emerald-300 hover:bg-emerald-50/20';
+          if(opt === 4) btn.className += ' hover:border-teal-300 hover:bg-teal-50/20';
+          if(opt === 3) btn.className += ' hover:border-slate-300 hover:bg-slate-50';
+          if(opt === 2) btn.className += ' hover:border-orange-300 hover:bg-orange-50/20';
+          if(opt === 1) btn.className += ' hover:border-rose-300 hover:bg-rose-50/20';
+          
+          badge.className = 'inline-flex mt-2 w-7 h-7 rounded-full bg-slate-100 text-slate-500 items-center justify-center font-bold text-xs transition-all';
+        }
+      });
+
+      // Highlight Question Badge
+      const qBadge = document.getElementById(`badge-${questionId}`);
+      if(qBadge) {
+        qBadge.className = 'flex-shrink-0 flex items-center justify-center w-8 h-8 rounded-full bg-indigo-600 text-white font-bold text-sm tracking-tight transition-colors';
+      }
+
+      // Highlight Question Card Container background slightly
+      const card = document.getElementById(`q-card-${questionId}`);
+      if(card) {
+        card.classList.add('bg-indigo-50/10', 'border-indigo-50');
+      }
+
+      updateProgress();
+
+      // Smart UX: Auto scroll to next question on the current page if not already filled
+      const pageQuestions = questions.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
+      const currentIdx = pageQuestions.findIndex(q => q.id === questionId);
+      
+      if(currentIdx < pageQuestions.length - 1) {
+        const nextQId = pageQuestions[currentIdx + 1].id;
+        const nextCard = document.getElementById(`q-card-${nextQId}`);
+        if(nextCard && answers[nextQId] === undefined) {
+          setTimeout(() => {
+            nextCard.scrollIntoView({ behavior: 'smooth', block: 'center' });
+          }, 250);
+        }
+      }
+    }
+
+    // Progress Calculation
+    function updateProgress() {
+      const answeredCount = Object.keys(answers).length;
+      const pct = Math.round((answeredCount / questions.length) * 100);
+
+      document.getElementById('percent-indicator').textContent = `${pct}% 완료`;
+      document.getElementById('progress-bar').style.width = `${pct}%`;
+      document.getElementById('page-indicator').textContent = `${currentPage} / ${totalPages} 단계`;
+
+      // Back Button States
+      const btnPrev = document.getElementById('btn-prev');
+      if(currentPage === 1) {
+        btnPrev.disabled = true;
+      } else {
+        btnPrev.disabled = false;
+      }
+
+      // Forward Button Label
+      const btnNext = document.getElementById('btn-next');
+      if(currentPage === totalPages) {
+        btnNext.innerHTML = `진단 마쳐서 결과 보기 <i class="fa-solid fa-square-poll-vertical text-sm ml-1"></i>`;
+      } else {
+        btnNext.innerHTML = `다음 단계 <i class="fa-solid fa-chevron-right text-sm"></i>`;
+      }
+    }
+
+    // Go to Previous Page
+    function prevPage() {
+      if(currentPage > 1) {
+        currentPage--;
+        renderPage();
+        window.scrollTo({ top: 120, behavior: 'smooth' });
+      }
+    }
+
+    // Go to Next Page & Final Validation check
+    function nextPage() {
+      const startIndex = (currentPage - 1) * itemsPerPage;
+      const endIndex = startIndex + itemsPerPage;
+      const currentQuestions = questions.slice(startIndex, endIndex);
+
+      // Check if all questions on this page are answered
+      const unanswered = currentQuestions.filter(q => answers[q.id] === undefined);
+
+      if(unanswered.length > 0) {
+        // Find the first unanswered question card and scroll
+        const targetId = unanswered[0].id;
+        const targetCard = document.getElementById(`q-card-${targetId}`);
+        if(targetCard) {
+          targetCard.scrollIntoView({ behavior: 'smooth', block: 'center' });
+          // Give a small flash highlight or shake effect
+          targetCard.classList.add('ring-2', 'ring-rose-500/30', 'border-rose-300');
+          setTimeout(() => {
+            targetCard.classList.remove('ring-2', 'ring-rose-500/30', 'border-rose-300');
+          }, 1200);
+        }
+        showToast("이번 단계에 답하지 않은 질문이 있습니다. 마저 대답해주세요!");
+        return;
+      }
+
+      if(currentPage < totalPages) {
+        currentPage++;
+        renderPage();
+        window.scrollTo({ top: 120, behavior: 'smooth' });
+      } else {
+        // We reached the final submit action!
+        calculateResults();
+      }
+    }
+
+    // Sum calculation logic & Display
+    function calculateResults() {
+      // Hide Survey
+      document.getElementById('section-survey').classList.add('hidden');
+      
+      // Show Loader with simulated steps
+      const loader = document.getElementById('section-loading');
+      loader.classList.remove('hidden');
+
+      const statusText = document.getElementById('loading-status-text');
+      
+      // Artificial delay steps to build anticipation
+      setTimeout(() => {
+        statusText.textContent = "가장 영향력이 높은 CS 행동 유형 가중치 수렴 중...";
+      }, 500);
+
+      setTimeout(() => {
+        statusText.textContent = "개인용 마케팅 & CS 소통 맞춤 실천 가이드 생성 중...";
+      }, 1000);
+
+      setTimeout(() => {
+        // Complete Calculation
+        loader.classList.add('hidden');
+        renderResultView();
+      }, 1600);
+    }
+
+    function renderResultView() {
+      const resultSec = document.getElementById('section-result');
+      resultSec.classList.remove('hidden');
+
+      // Initialize category scores
+      const categoryScores = { A: 0, B: 0, C: 0, D: 0, E: 0 };
+
+      // Calculate Scores
+      questions.forEach(q => {
+        const score = answers[q.id] || 0;
+        categoryScores[q.category] += score;
+      });
+
+      // Find primary (maximum score)
+      let maxScore = -1;
+      let primaryCategory = 'A';
+
+      // Find Max with precedence in alphabetical order
+      const categories = ['A', 'B', 'C', 'D', 'E'];
+      categories.forEach(cat => {
+        if(categoryScores[cat] > maxScore) {
+          maxScore = categoryScores[cat];
+          primaryCategory = cat;
+        }
+      });
+
+      // Find lowest category
+      let minScore = 999;
+      let weakestCategory = 'A';
+      categories.forEach(cat => {
+        if(categoryScores[cat] < minScore) {
+          minScore = categoryScores[cat];
+          weakestCategory = cat;
+        }
+      });
+
+      // Render User Name in header card
+      document.getElementById('result-user-name').textContent = userName;
+
+      // Render top primary badge
+      const activeType = typeInfo[primaryCategory];
+      const badgeContainer = document.getElementById('primary-badge-container');
+      badgeContainer.textContent = `${activeType.badge} (Type ${primaryCategory})`;
+      
+      // Adjust badge background color based on active type
+      badgeContainer.className = `text-lg md:text-xl font-black text-white px-4 py-2 rounded-xl shadow-lg border ${activeType.colorClass} border-white/20`;
+
+      // Render dynamic bar charts
+      const chartsWrapper = document.getElementById('charts-wrapper');
+      chartsWrapper.innerHTML = '';
+
+      categories.forEach(cat => {
+        const score = categoryScores[cat];
+        const typeMeta = typeInfo[cat];
+        // Score out of 30 normalized to percentage
+        const pct = Math.round((score / 30) * 100);
+
+        const barCard = document.createElement('div');
+        barCard.className = "space-y-1.5";
+        barCard.innerHTML = `
+          <div class="flex justify-between items-center text-xs md:text-sm font-bold">
+            <span class="text-slate-700 flex items-center gap-1.5">
+              <span class="w-2 h-2 rounded-full ${typeMeta.colorClass}"></span>
+              ${typeMeta.title}
+            </span>
+            <span class="text-slate-900">${score} / 30점 <span class="text-slate-400 font-normal">(${pct}%)</span></span>
+          </div>
+          <div class="w-full bg-slate-100 rounded-full h-4 overflow-hidden shadow-inner flex relative">
+            <div class="${typeMeta.colorClass} h-full rounded-full transition-all duration-1000 ease-out" style="width: 0%;" id="bar-${cat}"></div>
+          </div>
+        `;
+        chartsWrapper.appendChild(barCard);
+
+        // Animate width insertion after minor delay for aesthetic rendering
+        setTimeout(() => {
+          const barElem = document.getElementById(`bar-${cat}`);
+          if(barElem) barElem.style.width = `${pct}%`;
+        }, 100);
+      });
+
+      // Render strongest/weakest quick summaries
+      document.getElementById('strongest-type-summary').innerHTML = `<b>${typeInfo[primaryCategory].badge} (${maxScore}점)</b> - 현재 가장 활성화되어 사용되고 있는 당신의 메인 소통 가치관입니다.`;
+      document.getElementById('weakest-type-summary').innerHTML = `<b>${typeInfo[weakestCategory].badge} (${minScore}점)</b> - 다소 둔화되어 있거나 개선이 추천되는 지점입니다. 아래 가이드라인을 참조하십시오.`;
+
+      // Render Core Primary style details block
+      const primaryLabel = document.getElementById('primary-type-label');
+      primaryLabel.textContent = `TYPE ${primaryCategory}`;
+      primaryLabel.className = `px-2.5 py-1 text-xs font-extrabold rounded-md text-white ${activeType.colorClass}`;
+
+      document.getElementById('primary-title').textContent = activeType.title;
+      document.getElementById('primary-tagline').textContent = `"${activeType.tagline}"`;
+      document.getElementById('primary-desc').textContent = activeType.description;
+
+      // Strengths Inject
+      const strList = document.getElementById('primary-strengths');
+      strList.innerHTML = '';
+      activeType.strengths.forEach(str => {
+        const li = document.createElement('li');
+        li.innerHTML = str;
+        strList.appendChild(li);
+      });
+
+      // Weaknesses Inject
+      const weakList = document.getElementById('primary-weaknesses');
+      weakList.innerHTML = '';
+      activeType.weaknesses.forEach(wk => {
+        const li = document.createElement('li');
+        li.innerHTML = wk;
+        weakList.appendChild(li);
+      });
+
+      // Action Growth items Inject
+      const growthContainer = document.getElementById('primary-growth-items');
+      growthContainer.innerHTML = '';
+      activeType.growth.forEach((grow, idx) => {
+        const itemBox = document.createElement('div');
+        itemBox.className = "p-4 rounded-xl bg-indigo-50/40 border border-indigo-100/50 flex gap-3";
+        itemBox.innerHTML = `
+          <span class="flex-shrink-0 flex items-center justify-center w-6 h-6 rounded-full bg-indigo-100 text-indigo-700 font-bold text-xs">${idx + 1}</span>
+          <p class="text-xs text-slate-700 leading-relaxed">${grow}</p>
+        `;
+        growthContainer.appendChild(itemBox);
+      });
+
+      // Smooth scroll to results
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    // Copy Text Report to Clipboard
+    function copyToClipboard() {
+      // Calculate scores again for report generation
+      const categoryScores = { A: 0, B: 0, C: 0, D: 0, E: 0 };
+      questions.forEach(q => {
+        const score = answers[q.id] || 0;
+        categoryScores[q.category] += score;
+      });
+
+      let maxScore = -1;
+      let primaryCategory = 'A';
+      const categories = ['A', 'B', 'C', 'D', 'E'];
+      categories.forEach(cat => {
+        if(categoryScores[cat] > maxScore) {
+          maxScore = categoryScores[cat];
+          primaryCategory = cat;
+        }
+      });
+
+      const reportText = `[CS Style Solution - 서비스 마인드 자가 진단 결과 보고서]
+성명: ${userName} 님
+최종 매칭 CS 스타일: ${typeInfo[primaryCategory].title}
+
+[유형별 상세 획득점수 (30점 만점)]
+- A. 신속명쾌 해결사형: ${categoryScores.A}점
+- B. 친근사교 호감형: ${categoryScores.B}점
+- C. 격식신중 원칙형: ${categoryScores.C}점
+- D. 수동조심 지원형: ${categoryScores.D}점
+- E. 감동헌신 정성형: ${categoryScores.E}점
+
+[주요 성장 실천 가이드]
+${typeInfo[primaryCategory].growth.map((g, i) => `${i+1}. ${g.replace(/<\/?[^>]+(>|$)/g, "")}`).join('\n')}
+
+제작처: CS Style Solution 자가검사 도구`;
+
+      // Execute Copy using fallback safe command
+      const el = document.createElement('textarea');
+      el.value = reportText;
+      document.body.appendChild(el);
+      el.select();
+      document.execCommand('copy');
+      document.body.removeChild(el);
+
+      showToast("결과 요약 보고서가 클립보드에 무사히 복사되었습니다! 메모장 등에 붙여넣어 공유하세요.");
+    }
+
+    // Restart Test
+    function restartQuiz() {
+      // Reset variables
+      for (const member in answers) delete answers[member];
+      currentPage = 1;
+
+      // Hide results, show intro
+      document.getElementById('section-result').classList.add('hidden');
+      document.getElementById('section-intro').classList.remove('hidden');
+      document.getElementById('user-name').value = '';
+
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    // Standard Message Toast Trigger (replaces alert)
+    function showToast(message) {
+      const toast = document.getElementById('toast-message');
+      const toastText = document.getElementById('toast-text');
+      toastText.textContent = message;
+      
+      // Animate Entry
+      toast.classList.remove('opacity-0', 'pointer-events-none', 'translate-y-2');
+      toast.classList.add('opacity-100', 'translate-y-0');
+
+      // Auto Dismiss
+      setTimeout(() => {
+        toast.classList.add('opacity-0', 'pointer-events-none', 'translate-y-2');
+        toast.classList.remove('opacity-100', 'translate-y-0');
+      }, 3500);
+    }
+
+    // Ensure initial landing load state is ready
+    window.onload = function() {
+      // Set initial values
+    };
+  </script>
+</body>
+</html>
