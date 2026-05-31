@@ -1,0 +1,1455 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CS Style Solution - 더하기교육원</title>
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Google Fonts (Noto Sans KR) -->
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700;900&display=swap" rel="stylesheet">
+  <!-- Lucide Icons CDN -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+  
+  <style>
+    body {
+      font-family: 'Noto Sans KR', sans-serif;
+    }
+    @media print {
+      .no-print {
+        display: none !important;
+      }
+      body {
+        background-color: white !important;
+      }
+      .print-card {
+        border: 1px solid #e2e8f0 !important;
+        box-shadow: none !important;
+        page-break-inside: avoid;
+      }
+    }
+    .animate-fade-in {
+      animation: fadeIn 0.3s ease-out forwards;
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(8px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+  </style>
+</head>
+<body class="min-h-screen bg-slate-50 text-slate-800 flex flex-col selection:bg-orange-500 selection:text-white">
+
+  <!-- ==========================================
+      HEADER BAR
+      ========================================== -->
+  <header class="sticky top-0 z-40 bg-white border-b border-slate-200 shadow-sm backdrop-blur-md bg-white/95 no-print">
+    <div class="max-w-6xl mx-auto px-4 py-4 flex items-center justify-between">
+      <div class="flex items-center space-x-3 cursor-pointer" onclick="handleResetTest()">
+        <div class="bg-gradient-to-tr from-orange-500 to-red-500 text-white p-2.5 rounded-xl shadow-md shadow-orange-100 flex items-center justify-center">
+          <i data-lucide="plus" class="h-5 w-5 stroke-[3]"></i>
+        </div>
+        <div>
+          <span class="text-xs font-semibold tracking-widest text-orange-600 uppercase block">더하기교육원 솔루션</span>
+          <h1 class="text-lg font-bold text-slate-900 tracking-tight">CS Style Solution</h1>
+        </div>
+      </div>
+
+      <nav class="flex space-x-2 text-sm font-medium items-center">
+        <button onclick="navigateTab('intro')" id="nav-btn-test" class="px-3 py-1.5 rounded-lg transition bg-orange-50 text-orange-600 font-semibold">
+          CS 진단하기
+        </button>
+        <button onclick="handleGoToAdmin()" id="nav-btn-org" class="px-3 py-1.5 rounded-lg transition flex items-center space-x-1.5 text-slate-600 hover:text-slate-900 hover:bg-slate-100">
+          <i data-lucide="lock" class="h-4 w-4" id="nav-lock-icon"></i>
+          <span>조직 통계 대시보드</span>
+        </button>
+        <button onclick="handleAdminLogout()" id="nav-logout-btn" class="hidden ml-2 text-xs bg-slate-200 hover:bg-slate-300 text-slate-700 font-bold px-2 py-1 rounded">
+          잠금
+        </button>
+      </nav>
+    </div>
+  </header>
+
+  <!-- ==========================================
+      CUSTOM ALERT DIALOG
+      ========================================== -->
+  <div id="custom-alert" class="fixed inset-0 z-50 hidden flex items-center justify-center p-4 bg-black/40 backdrop-blur-sm animate-fade-in no-print">
+    <div class="bg-white rounded-2xl max-w-sm w-full p-6 shadow-2xl border border-slate-100">
+      <div class="flex items-center space-x-3 text-orange-600 mb-4">
+        <i data-lucide="alert-circle" class="h-6 w-6 shrink-0"></i>
+        <h3 class="text-lg font-bold text-slate-900">안내 사항</h3>
+      </div>
+      <p id="custom-alert-msg" class="text-sm text-slate-600 leading-relaxed mb-6">메시지 내용</p>
+      <button onclick="closeAlert()" class="w-full bg-orange-600 hover:bg-orange-700 text-white font-semibold py-2.5 rounded-xl transition duration-150 shadow-md shadow-orange-100">
+        확인
+      </button>
+    </div>
+  </div>
+
+  <!-- ==========================================
+      CUSTOM CONFIRM DIALOG
+      ========================================== -->
+  <div id="custom-confirm" class="fixed inset-0 z-50 hidden flex items-center justify-center p-4 bg-black/40 backdrop-blur-sm animate-fade-in no-print">
+    <div class="bg-white rounded-2xl max-w-sm w-full p-6 shadow-2xl border border-slate-100">
+      <div class="flex items-center space-x-3 text-red-600 mb-4">
+        <i data-lucide="alert-triangle" class="h-6 w-6 shrink-0"></i>
+        <h3 class="text-lg font-bold text-slate-900">데이터 완전 삭제</h3>
+      </div>
+      <p id="custom-confirm-msg" class="text-sm text-slate-600 leading-relaxed mb-6">정말로 수집된 모든 교육생의 진단 기록을 초기화하시겠습니까? 이 작업은 되돌릴 수 없습니다.</p>
+      <div class="flex space-x-3">
+        <button onclick="closeConfirm(false)" class="flex-1 bg-slate-100 hover:bg-slate-200 text-slate-700 font-semibold py-2.5 rounded-xl transition">
+          취소
+        </button>
+        <button onclick="closeConfirm(true)" class="flex-1 bg-red-600 hover:bg-red-700 text-white font-semibold py-2.5 rounded-xl transition shadow-md shadow-red-100">
+          삭제하기
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==========================================
+      ANALYZING OVERLAY
+      ========================================== -->
+  <div id="analyzing-overlay" class="fixed inset-0 z-50 hidden flex flex-col items-center justify-center bg-slate-900/80 backdrop-blur-md no-print">
+    <div class="relative flex flex-col items-center">
+      <div class="w-20 h-20 border-4 border-orange-500 border-t-transparent rounded-full animate-spin"></div>
+      <div class="absolute top-7 text-white font-bold animate-pulse">CS</div>
+      <p class="mt-8 text-xl font-bold text-white tracking-wide">서비스 마인드 입체 진단 중...</p>
+      <p class="mt-2 text-slate-400 text-sm">답변 내용을 분류하고 CS 지표를 실시간 분석하고 있습니다.</p>
+    </div>
+  </div>
+
+  <!-- ==========================================
+      MAIN CONTENTS CONTAINER
+      ========================================== -->
+  <main class="flex-grow max-w-6xl mx-auto px-4 py-8 w-full">
+
+    <!-- TAB 1: INTRO SECTION -->
+    <section id="tab-intro" class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-stretch animate-fade-in">
+      <!-- Lead Card -->
+      <div class="lg:col-span-7 bg-white rounded-3xl border border-slate-200/80 shadow-sm p-8 flex flex-col justify-between relative overflow-hidden">
+        <div class="absolute -right-16 -top-16 w-48 h-48 bg-orange-50 rounded-full blur-2xl opacity-70"></div>
+        
+        <div>
+          <div class="inline-flex items-center space-x-2 bg-orange-50 border border-orange-100 rounded-full px-3 py-1 mb-6">
+            <i data-lucide="sparkles" class="h-3.5 w-3.5 text-orange-600"></i>
+            <span class="text-xs font-semibold text-orange-600">더하기교육원 협력 솔루션</span>
+          </div>
+          
+          <h2 class="text-3xl lg:text-4xl font-extrabold text-slate-900 leading-tight tracking-tight">
+            나의 고객 성향과<br />
+            <span class="text-transparent bg-clip-text bg-gradient-to-r from-orange-500 to-red-600">
+              CS 스타일 입체 진단
+            </span>
+          </h2>
+          
+          <p class="mt-4 text-slate-600 leading-relaxed text-sm lg:text-base">
+            본 진단 프로그램은 서비스 현장에서 마주하는 다양한 스트레스와 상황 판단 능력을 30가지 문항을 통해 정밀 측정합니다. 
+            진단 완료 시 **나만의 CS 유형 및 성적표**를 즉시 확인하실 수 있습니다.
+          </p>
+
+          <div class="mt-8 space-y-3.5">
+            <div class="flex items-start space-x-3">
+              <i data-lucide="check-circle-2" class="h-5 w-5 text-orange-500 shrink-0 mt-0.5"></i>
+              <span class="text-sm text-slate-700"><strong>5대 성향 판별:</strong> 해결사형(A), 소통가형(B), 전문가형(C), 지원가형(D), 배려자형(E)</span>
+            </div>
+            <div class="flex items-start space-x-3">
+              <i data-lucide="check-circle-2" class="h-5 w-5 text-orange-500 shrink-0 mt-0.5"></i>
+              <span class="text-sm text-slate-700"><strong>개별 맞춤 분석:</strong> 교육생 개별 점수와 취약점 개선 행동 팁 제공</span>
+            </div>
+            <div class="flex items-start space-x-3">
+              <i data-lucide="check-circle-2" class="h-5 w-5 text-orange-500 shrink-0 mt-0.5"></i>
+              <span class="text-sm text-slate-700"><strong>강사 강의 전용:</strong> 전체 조직 및 부서별 비교 통계는 담당 강사만 공개 가능</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Start Info Form -->
+        <div class="mt-10 border-t border-slate-100 pt-8">
+          <h3 class="text-md font-bold text-slate-950 mb-4 flex items-center space-x-2">
+            <i data-lucide="briefcase" class="h-5 w-5 text-orange-600"></i>
+            <span>진단 정보 입력</span>
+          </h3>
+          
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div>
+              <label class="block text-xs font-semibold text-slate-500 mb-1.5 uppercase">이름 또는 닉네임</label>
+              <input 
+                type="text" 
+                id="input-name"
+                placeholder="예: 홍길동"
+                class="w-full bg-slate-50 border border-slate-200 hover:border-slate-300 focus:border-orange-500 focus:ring-1 focus:ring-orange-500 rounded-xl px-4 py-3 text-sm transition outline-none"
+              />
+            </div>
+            <div>
+              <label class="block text-xs font-semibold text-slate-500 mb-1.5 uppercase">소속 부서 / 조직명</label>
+              <input 
+                type="text" 
+                id="input-dept"
+                placeholder="예: 고객지원팀, 영업부"
+                class="w-full bg-slate-50 border border-slate-200 hover:border-slate-300 focus:border-orange-500 focus:ring-1 focus:ring-orange-500 rounded-xl px-4 py-3 text-sm transition outline-none"
+              />
+            </div>
+          </div>
+
+          <div class="mt-6 flex flex-col sm:flex-row gap-3">
+            <button 
+              onclick="handleStartTest()"
+              class="flex-1 bg-orange-600 hover:bg-orange-700 text-white font-bold py-3.5 px-6 rounded-xl transition duration-150 flex items-center justify-center space-x-2 shadow-lg shadow-orange-100"
+            >
+              <span>마인드 진단 시작하기</span>
+              <i data-lucide="arrow-right" class="h-4 w-4"></i>
+            </button>
+            <button 
+              onclick="handleGoToAdmin()"
+              class="sm:w-auto bg-white hover:bg-slate-50 text-slate-700 font-semibold py-3.5 px-5 border border-slate-200 rounded-xl transition flex items-center justify-center space-x-2"
+            >
+              <i data-lucide="lock" class="h-4 w-4 text-slate-400"></i>
+              <span>조직 통계 (강사용)</span>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Quick Cards of styles -->
+      <div class="lg:col-span-5 flex flex-col justify-between gap-4">
+        <div class="bg-slate-950 text-white rounded-3xl p-6 shadow-xl flex-1 flex flex-col justify-between relative overflow-hidden border border-slate-800">
+          <div class="absolute right-0 bottom-0 opacity-10">
+            <i data-lucide="award" class="h-56 w-56 transform translate-x-12 translate-y-12"></i>
+          </div>
+          <div>
+            <h4 class="text-orange-400 font-bold tracking-wider text-xs uppercase">Diagnosis Categories</h4>
+            <h3 class="text-xl font-bold mt-1">CS 5대 핵심 성향 프로필</h3>
+            <p class="text-slate-400 text-xs mt-2 leading-relaxed">우리의 비즈니스와 소통 스타일은 어떤 특징이 있을까요?</p>
+          </div>
+          
+          <div id="intro-styles-list" class="mt-6 space-y-3">
+            <!-- Dynamic styles summary list will render here -->
+          </div>
+        </div>
+
+        <div class="bg-white border border-slate-200 rounded-3xl p-6 shadow-sm flex flex-col justify-between">
+          <div class="flex items-center space-x-3 mb-4">
+            <div class="bg-orange-50 text-orange-600 p-2.5 rounded-xl">
+              <i data-lucide="users" class="h-5 w-5"></i>
+            </div>
+            <div>
+              <h4 class="text-xs font-semibold text-slate-500">현재 통계 인원</h4>
+              <p id="intro-total-count" class="text-lg font-bold text-slate-950">총 0명 참여 중</p>
+            </div>
+          </div>
+          <p class="text-xs text-slate-500 leading-relaxed mb-4">
+            교육생 개인별 응답 결과가 실시간으로 집계되며, 취합된 통계 대시보드는 오직 교육 주관 담당자 및 진행 강사님만 열람할 수 있습니다.
+          </p>
+          <div class="flex items-center justify-between">
+            <div class="flex space-x-1.5 items-center">
+              <div class="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse"></div>
+              <span class="text-[10px] text-emerald-600 font-bold uppercase tracking-wider">Local DB System Active</span>
+            </div>
+            <!-- Download Button in Intro -->
+            <button onclick="downloadEntireApp()" class="text-xs text-orange-600 hover:text-orange-800 font-bold flex items-center space-x-1">
+              <i data-lucide="file-text" class="h-3 w-3"></i>
+              <span>Chrome HTML 저장</span>
+            </button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- TAB 2: RUNNING TEST SECTION -->
+    <section id="tab-test" class="max-w-3xl mx-auto hidden animate-fade-in no-print">
+      <!-- Diagnostic Header -->
+      <div class="bg-white rounded-2xl border border-slate-200 shadow-sm p-6 mb-6">
+        <div class="flex items-center justify-between mb-4">
+          <div class="flex items-center space-x-2">
+            <span class="text-xs font-extrabold bg-orange-100 text-orange-700 px-2.5 py-1 rounded-full uppercase">
+              진단 진행 중
+            </span>
+            <span id="test-user-info" class="text-xs font-medium text-slate-500">
+              홍길동 님 / 영업부
+            </span>
+          </div>
+          <span id="test-progress-text" class="text-sm font-bold text-orange-600">
+            0% 완료
+          </span>
+        </div>
+
+        <!-- Progress bar -->
+        <div class="w-full bg-slate-100 rounded-full h-2 overflow-hidden">
+          <div id="test-progress-bar" class="bg-orange-600 h-full transition-all duration-300 ease-out" style="width: 0%"></div>
+        </div>
+      </div>
+
+      <!-- Questions Container -->
+      <div id="questions-container" class="space-y-4">
+        <!-- Dynamic questions rendered here -->
+      </div>
+
+      <!-- Navigation buttons -->
+      <div class="mt-8 flex justify-between items-center bg-white p-4 rounded-2xl border border-slate-200 shadow-sm">
+        <button
+          onclick="handlePrevPage()"
+          id="btn-prev-page"
+          class="px-5 py-2.5 rounded-xl text-sm font-bold border border-slate-200 text-slate-700 hover:bg-slate-50 disabled:opacity-40 disabled:hover:bg-transparent transition flex items-center space-x-1"
+        >
+          <span>이전 단계</span>
+        </button>
+
+        <span id="test-page-indicator" class="text-xs text-slate-500 font-medium">
+          총 6단계 중 1단계
+        </span>
+
+        <button
+          onclick="handleNextPage()"
+          id="btn-next-page"
+          class="px-6 py-2.5 rounded-xl text-sm font-bold bg-orange-600 hover:bg-orange-700 text-white transition flex items-center space-x-1"
+        >
+          <span id="btn-next-text">다음 단계</span>
+          <i data-lucide="chevron-right" class="h-4 w-4"></i>
+        </button>
+      </div>
+    </section>
+
+    <!-- TAB 3: PERSONAL RESULT SECTION -->
+    <section id="tab-result" class="space-y-8 hidden animate-fade-in">
+      <!-- Top diagnostic badge -->
+      <div id="result-badge-card" class="text-white rounded-3xl p-8 shadow-xl relative overflow-hidden">
+        <div class="absolute right-0 top-0 opacity-10">
+          <i data-lucide="award" class="h-72 w-72 transform translate-x-12 -translate-y-12"></i>
+        </div>
+
+        <div class="relative">
+          <span class="text-xs font-bold tracking-widest text-white/80 bg-white/20 px-3 py-1 rounded-full uppercase">
+            종합 분석 성적표
+          </span>
+          <h2 class="text-2xl sm:text-3xl font-extrabold mt-4">
+            <span id="result-user-name">홍길동</span> 님의 대표 CS 스타일은
+          </h2>
+          <h1 id="result-style-title" class="text-3xl sm:text-5xl font-black mt-2 tracking-tight">
+            "유형 타이틀"
+          </h1>
+          
+          <p id="result-style-desc" class="mt-4 text-white/95 text-sm sm:text-base leading-relaxed max-w-2xl">
+            유형 요약 피드백
+          </p>
+        </div>
+      </div>
+
+      <!-- Score Grid & Recommendations -->
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-stretch">
+        
+        <!-- Scores bar chart card -->
+        <div class="lg:col-span-6 bg-white rounded-3xl border border-slate-200 p-6 shadow-sm flex flex-col justify-between print-card">
+          <div>
+            <h3 class="text-lg font-bold text-slate-900 mb-1">성향 유형별 다각 진단표</h3>
+            <p class="text-xs text-slate-500 mb-6">각 영역별 최고점수 30점 만점 기준</p>
+
+            <div id="result-score-bars" class="space-y-4">
+              <!-- Dynamic bars will be rendered here -->
+            </div>
+          </div>
+
+          <div class="mt-6 pt-4 border-t border-slate-100 bg-slate-50 -mx-6 -mb-6 p-6 rounded-b-3xl flex flex-col sm:flex-row items-center justify-between gap-4 no-print">
+            <div class="flex items-center space-x-3">
+              <div class="w-10 h-10 rounded-full bg-orange-100 text-orange-600 flex items-center justify-center shrink-0">
+                <i data-lucide="lock" class="h-5 w-5"></i>
+              </div>
+              <div>
+                <h4 class="text-xs font-bold text-slate-900">전체 부서 통계 비교 (강사용)</h4>
+                <p class="text-[10px] text-slate-500">조직 평균 대시보드 접근에는 보안인증이 필요합니다</p>
+              </div>
+            </div>
+            <button 
+              onclick="handleGoToAdmin()"
+              class="w-full sm:w-auto bg-orange-600 hover:bg-orange-700 text-white font-bold py-2.5 px-5 rounded-xl text-xs transition duration-150 flex items-center justify-center space-x-1.5 shadow-md shadow-orange-100"
+            >
+              <span>강사 전용 인증하기</span>
+              <i data-lucide="arrow-right" class="h-3.5 w-3.5"></i>
+            </button>
+          </div>
+        </div>
+
+        <!-- Action Plan Section -->
+        <div class="lg:col-span-6 bg-white rounded-3xl border border-slate-200 p-6 shadow-sm flex flex-col justify-between print-card">
+          <div>
+            <h3 class="text-lg font-bold text-slate-900 mb-1">성장을 위한 맞춤형 피드백</h3>
+            <p class="text-xs text-slate-500 mb-6 font-semibold text-orange-600">더하기교육원이 제안하는 핵심 솔루션</p>
+
+            <div class="space-y-4">
+              <div class="p-4 rounded-2xl bg-emerald-50 border border-emerald-100">
+                <h4 class="text-xs font-extrabold text-emerald-700 uppercase tracking-wide">성향의 핵심 강점 (Strength)</h4>
+                <p id="result-strength" class="text-sm text-slate-800 mt-1.5 leading-relaxed font-semibold">
+                  강점 정보
+                </p>
+              </div>
+
+              <div class="p-4 rounded-2xl bg-red-50 border border-red-100">
+                <h4 class="text-xs font-extrabold text-red-700 uppercase tracking-wide">취약점과 보완점 (Weakness)</h4>
+                <p id="result-weakness" class="text-sm text-slate-800 mt-1.5 leading-relaxed font-semibold">
+                  취약 및 보완 정보
+                </p>
+              </div>
+
+              <div class="p-4 rounded-2xl bg-orange-50 border border-orange-100">
+                <h4 class="text-xs font-extrabold text-orange-700 uppercase tracking-wide">성장 실천 전략 (Action Tip)</h4>
+                <p id="result-tip" class="text-sm text-slate-800 mt-1.5 leading-relaxed">
+                  실천 팁 정보
+                </p>
+              </div>
+            </div>
+          </div>
+
+          <div class="mt-8 border-t border-slate-100 pt-6 flex flex-col sm:flex-row gap-3 no-print">
+            <button 
+              onclick="handleResetTest()"
+              class="flex-1 bg-white hover:bg-slate-50 text-slate-700 font-bold py-3 px-4 border border-slate-200 rounded-xl transition text-sm flex items-center justify-center space-x-2"
+            >
+              <i data-lucide="refresh-cw" class="h-4 w-4"></i>
+              <span>다시 진단하기</span>
+            </button>
+            <button 
+              onclick="window.print()"
+              class="flex-1 bg-orange-600 hover:bg-orange-700 text-white font-bold py-3 px-4 rounded-xl transition text-sm flex items-center justify-center space-x-2 shadow-md shadow-orange-100"
+            >
+              <i data-lucide="file-text" class="h-4 w-4"></i>
+              <span>진단 성적표 인쇄 / PDF 저장</span>
+            </button>
+            <button 
+              onclick="downloadEntireApp()"
+              class="flex-1 bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-3 px-4 rounded-xl transition text-sm flex items-center justify-center space-x-2 shadow-md shadow-emerald-100"
+            >
+              <i data-lucide="download" class="h-4 w-4"></i>
+              <span>HTML 파일로 앱 저장</span>
+            </button>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- TAB 4: TRAINER PASSWORD AUTH SECTION -->
+    <section id="tab-admin-auth" class="max-w-md mx-auto my-12 hidden animate-fade-in no-print">
+      <div class="bg-white rounded-3xl border border-slate-200 shadow-xl p-8 relative overflow-hidden">
+        <div class="absolute top-0 inset-x-0 h-1.5 bg-gradient-to-r from-orange-500 to-red-600"></div>
+        
+        <div class="flex flex-col items-center text-center mt-4">
+          <div class="bg-orange-50 text-orange-600 p-4 rounded-full mb-4">
+            <i data-lucide="lock" class="h-8 w-8"></i>
+          </div>
+          <h2 class="text-2xl font-black text-slate-900 tracking-tight">강사 및 주관부서 인증</h2>
+          <p class="text-xs text-slate-500 mt-2 leading-relaxed">
+            본 화면은 <strong>더하기교육원</strong> 교수진 및 사내 교육담당자의 강의 설명 진행 전용 페이지입니다.<br />
+            전체 교육생의 집계 데이터를 열람하려면 비밀번호를 입력해 주세요.
+          </p>
+        </div>
+
+        <form onsubmit="handleAdminVerify(event)" class="mt-8 space-y-4">
+          <div>
+            <label class="block text-xs font-semibold text-slate-500 mb-1.5 uppercase">인증 패스코드</label>
+            <input 
+              type="password" 
+              id="input-passcode"
+              placeholder="강사 전용 비밀번호를 입력해 주세요"
+              class="w-full bg-slate-50 border border-slate-200 focus:border-orange-500 focus:ring-1 focus:ring-orange-500 rounded-xl px-4 py-3 text-sm transition outline-none"
+              required
+            />
+            <span class="text-[10px] text-slate-400 block mt-1.5 text-right">※ 초기 비밀번호: thehagiedu</span>
+          </div>
+
+          <div id="auth-error-msg" class="hidden bg-red-50 border border-red-100 text-red-600 rounded-xl p-3 text-xs leading-snug flex items-start space-x-2">
+            <i data-lucide="alert-circle" class="h-4 w-4 shrink-0 mt-0.5"></i>
+            <span id="auth-error-text">비밀번호가 일치하지 않습니다.</span>
+          </div>
+
+          <div class="pt-2 flex space-x-3">
+            <button 
+              type="button"
+              onclick="navigateTab('intro')"
+              class="flex-1 bg-white hover:bg-slate-50 text-slate-600 font-bold py-3 rounded-xl border border-slate-200 transition text-sm text-center"
+            >
+              이전으로
+            </button>
+            <button 
+              type="submit"
+              class="flex-1 bg-orange-600 hover:bg-orange-700 text-white font-bold py-3 rounded-xl transition text-sm text-center shadow-lg shadow-orange-100"
+            >
+              로그인 및 대시보드 오픈
+            </button>
+          </div>
+        </form>
+      </div>
+    </section>
+
+    <!-- TAB 5: ORGANIZATION STATISTICS (DASHBOARD) -->
+    <section id="tab-org" class="space-y-8 hidden animate-fade-in">
+      <!-- Admin Header Title -->
+      <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 bg-white p-6 rounded-3xl border border-slate-200 shadow-sm print-card">
+        <div>
+          <div class="inline-flex items-center space-x-2 bg-emerald-50 border border-emerald-100 rounded-full px-3 py-1 mb-2">
+            <i data-lucide="unlock" class="h-3.5 w-3.5 text-emerald-600"></i>
+            <span class="text-xs font-semibold text-emerald-600">실시간 강사용 통계 화면</span>
+          </div>
+          <h2 class="text-2xl font-black text-slate-900 tracking-tight">CS 마인드 조직 통계 분석 (Trainer View)</h2>
+          <p class="text-xs text-slate-500 mt-1">우리 조직의 CS 스타일 다양성과 부서별 핵심 성향 분석 결과를 한눈에 확인하며 컨설팅할 수 있습니다.</p>
+        </div>
+
+        <div class="flex items-center space-x-2 self-start md:self-auto no-print">
+          <button
+            onclick="handleAddSimulatedUser()"
+            class="bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold py-2.5 px-4 rounded-xl text-xs transition duration-150 flex items-center space-x-1.5"
+          >
+            <i data-lucide="sparkles" class="h-3.5 w-3.5 text-orange-600"></i>
+            <span>시뮬레이션 인원 추가</span>
+          </button>
+          
+          <!-- 통계 데이터 삭제 버튼 -->
+          <button
+            onclick="handleClearAllSubmissions()"
+            class="bg-red-100 hover:bg-red-200 text-red-700 font-bold py-2.5 px-4 rounded-xl text-xs transition duration-150 flex items-center space-x-1.5 border border-red-200"
+          >
+            <i data-lucide="trash-2" class="h-3.5 w-3.5"></i>
+            <span>통계 데이터 초기화</span>
+          </button>
+
+          <button
+            onclick="handleAdminLogout()"
+            class="bg-slate-800 hover:bg-slate-900 text-white font-bold py-2.5 px-4 rounded-xl text-xs transition duration-150 flex items-center space-x-1.5"
+          >
+            <i data-lucide="lock" class="h-3.5 w-3.5"></i>
+            <span>대시보드 즉시 잠금</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Org KPI Summary Cards -->
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+        
+        <div class="bg-white rounded-2xl border border-slate-200 p-5 shadow-sm flex items-center space-x-4 print-card">
+          <div class="bg-orange-50 text-orange-600 p-3.5 rounded-2xl no-print">
+            <i data-lucide="users" class="h-6 w-6"></i>
+          </div>
+          <div>
+            <span class="text-xs text-slate-500 block font-semibold">총 진단 참여자 수</span>
+            <span id="org-kpi-total" class="text-2xl font-black text-slate-900">0명</span>
+            <span class="text-[10px] text-slate-400 block mt-0.5">실시간 로컬 DB 데이터 수집 누적</span>
+          </div>
+        </div>
+
+        <div class="bg-white rounded-2xl border border-slate-200 p-5 shadow-sm flex items-center space-x-4 print-card">
+          <div class="bg-amber-50 text-amber-600 p-3.5 rounded-2xl no-print">
+            <i data-lucide="award" class="h-6 w-6"></i>
+          </div>
+          <div class="min-w-0">
+            <span class="text-xs text-slate-500 block font-semibold">조직 우세 대표 스타일</span>
+            <span id="org-kpi-dominant" class="text-lg font-extrabold text-slate-900 truncate block">분석 중...</span>
+            <span class="text-[10px] text-slate-400 block mt-0.5">전체 유형 중 평균 점수가 최고인 스타일</span>
+          </div>
+        </div>
+
+        <div class="bg-white rounded-2xl border border-slate-200 p-5 shadow-sm flex items-center space-x-4 print-card">
+          <div class="bg-emerald-50 text-emerald-600 p-3.5 rounded-2xl no-print">
+            <i data-lucide="building" class="h-6 w-6"></i>
+          </div>
+          <div>
+            <span class="text-xs text-slate-500 block font-semibold">참여 조직 부서 수</span>
+            <span id="org-kpi-depts" class="text-2xl font-black text-slate-900">0개 부서</span>
+            <span class="text-[10px] text-slate-400 block mt-0.5">부서별 분포 분석 가능</span>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Comprehensive Charts section -->
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+        
+        <!-- Distribution Graph -->
+        <div class="lg:col-span-5 bg-white rounded-3xl border border-slate-200 p-6 shadow-sm print-card">
+          <h3 class="text-base font-bold text-slate-950 mb-1">조직 내 CS 스타일 분포도</h3>
+          <p class="text-xs text-slate-500 mb-6">주력 스타일로 판명된 구성원들의 유형 비중</p>
+
+          <div id="org-distribution-container" class="space-y-4">
+            <!-- Dynamic elements generated here -->
+          </div>
+        </div>
+
+        <!-- Company Averages Graph -->
+        <div class="lg:col-span-7 bg-white rounded-3xl border border-slate-200 p-6 shadow-sm print-card">
+          <h3 class="text-base font-bold text-slate-950 mb-1">5대 핵심 마인드셋 평균값</h3>
+          <p class="text-xs text-slate-500 mb-6">참여자 전원의 CS 항목별 30점 만점 대비 평균 점수</p>
+
+          <div id="org-averages-bars" class="grid grid-cols-5 gap-3 h-48 items-end border-b border-slate-200 pb-2">
+            <!-- Dynamic vertical bar chart here -->
+          </div>
+
+          <div id="org-averages-labels" class="grid grid-cols-5 gap-3 pt-3 text-center">
+            <!-- Dynamic labels here -->
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Department Comparison Table -->
+      <div class="bg-white rounded-3xl border border-slate-200 shadow-sm overflow-hidden print-card">
+        <div class="p-6 border-b border-slate-100">
+          <h3 class="text-base font-bold text-slate-950 mb-1">소속 부서별 상세 통계</h3>
+          <p class="text-xs text-slate-500">부서별 CS 참여율과 강점 분야 요약표</p>
+        </div>
+
+        <div class="overflow-x-auto">
+          <table class="w-full text-left text-sm">
+            <thead class="bg-slate-50 border-b border-slate-100 text-xs font-bold text-slate-400 tracking-wider uppercase">
+              <tr>
+                <th class="py-3 px-6">부서/조직명</th>
+                <th class="py-3 px-6 text-center">참여자수</th>
+                <th class="py-3 px-6">부서 대표 CS 유형 (우세 성향)</th>
+                <th class="py-3 px-6">지표 점수 평균 (A / B / C / D / E)</th>
+              </tr>
+            </thead>
+            <tbody id="org-dept-table-rows" class="divide-y divide-slate-100">
+              <!-- Dynamic rows rendered here -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Strategic suggestion from education center -->
+      <div class="bg-slate-950 rounded-3xl p-8 text-white relative overflow-hidden shadow-xl print-card border border-slate-800">
+        <div class="absolute right-0 top-0 opacity-10">
+          <i data-lucide="sparkles" class="h-64 w-64 transform translate-x-12 -translate-y-12"></i>
+        </div>
+        <div class="relative max-w-2xl">
+          <span class="text-xs font-bold tracking-widest text-orange-400 uppercase">더하기교육원 핵심 컨설팅 제언</span>
+          <h3 class="text-xl sm:text-2xl font-bold mt-2 text-white">조직 CS 역량 강화를 위한 입체 전략</h3>
+          
+          <p class="mt-4 text-slate-300 text-sm leading-relaxed">
+            본 조직의 주력 CS 스타일 분석에 근거해 볼 때, 균형 잡힌 명품 접객 문화를 장착하기 위해서는 부서 간의 상호 커뮤니케이션 멘토링이 필수적입니다. 
+            해결 능력이 특출난 <strong>A(해결사형) 부서</strong>와 극진한 공감성을 가진 <strong>E(배려자형) 부서</strong>가 접객 모범사례를 상호 공유할 때, 
+            고객 충성도 극대화와 구성원 스트레스 감축이라는 두 가지 비즈니스 과제를 동시에 달성할 수 있습니다.
+          </p>
+          <div class="mt-6 flex flex-col sm:flex-row gap-3 no-print">
+            <a 
+              href="https://thehagiedu.com" 
+              target="_blank"
+              rel="noopener noreferrer"
+              class="inline-flex items-center justify-center space-x-1 bg-white hover:bg-slate-100 text-slate-950 font-bold text-xs py-3 px-5 rounded-xl transition shadow-md shadow-slate-900/30"
+            >
+              <span>맞춤형 조직 위탁 교육 문의하기</span>
+              <i data-lucide="arrow-right" class="h-4 w-4 text-slate-950"></i>
+            </a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- ==========================================
+      FOOTER
+      ========================================== -->
+  <footer class="bg-white border-t border-slate-200 py-8 text-center text-xs text-slate-400 mt-12 no-print">
+    <div class="max-w-6xl mx-auto px-4 space-y-2">
+      <p class="font-semibold text-slate-500">본 진단 도구는 더하기교육원의 CS 마인드 프로필 저작권 프레임워크를 바탕으로 제작되었습니다.</p>
+      <p>© 2026 더하기교육원 & CS Style Solution. All Rights Reserved.</p>
+    </div>
+  </footer>
+
+  <!-- ==========================================
+      CORE SCRIPT ENGINE (STATE-BASED VANILLA JS)
+      ========================================== -->
+  <script>
+    // ==========================================
+    // INITIAL SYSTEM STATE & CONSTANTS
+    // ==========================================
+    const ADMIN_PASSCODE = "thehagiedu";
+    
+    const STYLE_INFO = {
+      A: {
+        title: "명쾌한 신속 해결사 (Analytical Leader)",
+        short: "신속·정확·해결 중심",
+        color: "from-orange-500 to-red-600",
+        textColor: "text-orange-600",
+        bgColor: "bg-orange-50 border-orange-100",
+        barColor: "bg-orange-500",
+        desc: "고객의 근본적인 니즈를 한 발 앞서 명쾌하게 파악하고 최적의 솔루션을 제공하는 스마트 해결사입니다. 신뢰성 높은 커뮤니케이션으로 신뢰감을 주지만, 간혹 고객의 장황한 설명을 잘라 효율성만을 쫓는 인상을 줄 수 있습니다.",
+        strength: "뛰어난 직관력, 명쾌하고 논리적인 상황 설명, 빠른 문제 해결력",
+        weakness: "고객의 감정적 푸념 수용 부족, 다소 서두르는 태도 및 대화 차단 경향",
+        tip: "고객의 말이 길어지더라도 성급하게 결론을 내리기보다, 끝까지 경청(Active Listening)하는 자세와 부드러운 쿠션어를 추가하면 더욱 강력한 해결사가 됩니다."
+      },
+      B: {
+        title: "다정한 친근 소통가 (Friendly Socializer)",
+        short: "친화력·유머·감정 소통",
+        color: "from-amber-500 to-orange-500",
+        textColor: "text-amber-600",
+        bgColor: "bg-amber-50 border-amber-100",
+        barColor: "bg-amber-500",
+        desc: "마치 오랜 친구를 대하듯 친밀하고 유쾌한 웃음으로 고객의 마음을 사르르 녹이는 매력적인 소통가입니다. 고객과의 심리적 거리를 좁히는 데 탁월하나, 격식 있는 접객을 원하거나 공과 사의 구분을 엄격히 바라는 고객에게는 간혹 당황스러운 경험을 줄 수 있습니다.",
+        strength: "탁월한 아이스브레이킹, 긍정적인 분위기 메이킹, 편안한 소통 감각",
+        weakness: "엄격하고 세련된 격식 부족, 고객의 예민함에 정색하거나 쉽게 상처받는 편",
+        tip: "친근함은 최고의 무기이지만, 처음 만나는 고객이나 다소 격식을 중시해 보이는 고객 앞에서는 바른 자세와 세련된 비즈니스 존칭어를 먼저 확보해두는 것이 안전합니다."
+      },
+      C: {
+        title: "신중한 격식 전문가 (Formal Professional)",
+        short: "격식·원칙·신뢰 중심",
+        color: "from-slate-700 to-slate-900",
+        textColor: "text-slate-800",
+        bgColor: "bg-slate-50 border-slate-200",
+        barColor: "bg-slate-700",
+        desc: "흐트러짐 없는 단정한 태도와 높은 비즈니스 매너, 규정과 약속을 정밀하게 준수하는 신뢰도 만점의 전문가입니다. 빈틈없는 서포트로 높은 안정감을 주지만, 지나치게 냉소적이거나 딱딱하고 경직된 감정을 전달하여 다소 차가워 보일 수 있습니다.",
+        strength: "완벽한 격식 소화력, 정확한 가이드라인 안내, 업무의 전문성과 신중함",
+        weakness: "인간미 있는 정서적 교감 부족, 사소한 참견이나 개인적 대화에 정색하는 경향",
+        tip: "논리와 완벽성 뒤에 따뜻한 눈빛 교환(Eye Contact)과 '감사합니다'와 같은 밝은 톤의 정서적 피드백 한 마디를 얹으면 훨씬 편안한 분위기를 전달할 수 있습니다."
+      },
+      D: {
+        title: "조심스러운 안전 지원가 (Cautious Supporter)",
+        short: "경청·조심성·보조 지원",
+        color: "from-emerald-500 to-teal-600",
+        textColor: "text-emerald-600",
+        bgColor: "bg-emerald-50 border-emerald-100",
+        barColor: "bg-emerald-500",
+        desc: "문제를 일으키지 않고 고객을 조심스럽게 존중하며 배려하려 노력하는 사려 깊은 관찰자입니다. 양보와 친절을 지향하지만, 가끔 컴플레인을 들고 강력하게 항의하는 블랙컨슈머나 예측불가 요구를 해오는 고객 앞에서는 답변을 얼버무리며 위축되는 성향이 있습니다.",
+        strength: "겸손하고 섬세한 태도, 고객에 대한 강한 예의 및 조심성 있는 대응",
+        weakness: "돌발 상황이나 불만 제기 시 대처력 부족, 자신감 없는 수동적 답변",
+        tip: "고객에게 '어디까지 해줄 수 있을까' 고민하며 망설이기보다는, '정확하게 확인 후 신속하게 도와드리겠습니다!'라는 당당한 목소리와 전문성 있는 확답 연습이 큰 힘이 됩니다."
+      },
+      E: {
+        title: "지극정성 감성 배려자 (Empathetic Caregiver)",
+        short: "꼼꼼·정성·지극정성 배려",
+        color: "from-pink-500 to-red-500",
+        textColor: "text-red-500",
+        bgColor: "bg-pink-50 border-pink-100",
+        barColor: "bg-red-400",
+        desc: "고객 한 명 한 명을 극진하고 세밀하게 챙겨 상대가 감동하게 만드는 천생 서비스 전문가입니다. 정성 어린 보살핌으로 단골 고객 확보율이 매우 높으나, 감정 소모가 매우 심하고 나를 희생해가며 응대하는 경향이 있어 쉽게 지치거나 번아웃이 올 수 있습니다.",
+        strength: "고객 맞춤형 꼼꼼함, 깊은 진심이 묻어나는 환대 태도, 탁월한 공감 능력",
+        weakness: "지나치게 깊은 감정 투입으로 인한 에너지 조기 소진, 감정과 업무 분리의 어려움",
+        tip: "나의 마음 건강이 좋아야 건강한 정성도 나옵니다. 고객 응대가 끝난 직후에는 의식적으로 심호흡을 하거나 자신을 토닥이며 감정을 분리하는 '셀프 케어' 루틴이 필수로 요구됩니다."
+      }
+    };
+
+    const QUESTIONS = [
+      { id: 1, text: "본인 욕구를 모른 채 오는 고객들이 많다.", category: "A" },
+      { id: 2, text: "매출 정도나 대상에 따른 차별대우는 당연하다.", category: "C" },
+      { id: 3, text: "고객들은 대부분 정성스럽고, 꼼꼼한 대우를 바란다.", category: "E" },
+      { id: 4, text: "고객에게 먼저 농담이나 친밀감 있는 표현을 잘 건네는 편이다.", category: "B" },
+      { id: 5, text: "고객들이 뭔가 물어 올 때 피곤함을 느낄 때가 있다.", category: "D" },
+      { id: 6, text: "친한 친구 대하듯 고객을 대한다는 소리를 듣는다.", category: "B" },
+      { id: 7, text: "고객을 극진하게 대우하는 편이다.", category: "E" },
+      { id: 8, text: "직원도 격식이 있어야 한다.", category: "C" },
+      { id: 9, text: "고객의 요청이 맞는지 몇 번이나 확인한다.", category: "D" },
+      { id: 10, text: "고객이 묻는 모든 것에 대답할 자신이 있다.", category: "A" },
+      { id: 11, text: "고객에게 어디까지 해줘야 하는지 모르겠다.", category: "D" },
+      { id: 12, text: "지나치게 개인적인 말을 하거나, 참견하는 고객은 달갑지 않다.", category: "C" },
+      { id: 13, text: "고객의 소소한 상황까지 챙겨 고객이 놀랄 때가 있다.", category: "E" },
+      { id: 14, text: "고객과 말이 겹치는 경우가 많다.", category: "A" },
+      { id: 15, text: "고객에게 칭찬이나 극찬을 잘하는 편이다.", category: "B" },
+      { id: 16, text: "바라고 한 건 아닌데, 감사 인사나 감동했다는 말을 듣기도 한다.", category: "E" },
+      { id: 17, text: "평소 소극적이라 상대가 말을 건네주길 바란다.", category: "D" },
+      { id: 18, text: "매사에 신중하고 쉽게 보이는 스타일이 아니다.", category: "C" },
+      { id: 19, text: "내 설명은 명쾌하고 믿을 만하다.", category: "A" },
+      { id: 20, text: "재미있게 말을 잘하는 편이다.", category: "B" },
+      { id: 21, text: "종종 차가운 인상이고 쉽지가 않아 보인다는 말을 듣는다.", category: "C" },
+      { id: 22, text: "고객에게 쉽게 말을 잘 거는 편이다.", category: "B" },
+      { id: 23, text: "고객이 따지며 문제 제기할 때, 대답을 못할 때도 많다.", category: "D" },
+      { id: 24, text: "결국 고객은 정성을 산다.", category: "E" },
+      { id: 25, text: "고객이 뭘 원하는지 '아' 하면 '척' 한다.", category: "A" },
+      { id: 26, text: "장난이나 친근함에 정색하는 고객 때문에 언짢은 적이 있다.", category: "B" },
+      { id: 27, text: "종종 고객들은 나의 친절을 당황해한다.", category: "E" },
+      { id: 28, text: "고객을 조심스럽게 대하는 편이다.", category: "D" },
+      { id: 29, text: "고객의 긴 말을 참지 못하고, 말을 끊게 되는 경우가 있다.", category: "A" },
+      { id: 30, text: "나도 모르게 종종 고객을 무시하는 태도를 보일 때가 있다.", category: "C" }
+    ];
+
+    const MOCK_SUBMISSIONS = [
+      { name: "김민준", department: "고객지원팀", scores: { A: 24, B: 18, C: 12, D: 14, E: 26 }, primaryStyle: "E" },
+      { name: "이서연", department: "고객지원팀", scores: { A: 22, B: 25, C: 15, D: 13, E: 20 }, primaryStyle: "B" },
+      { name: "박우진", department: "영업기획부", scores: { A: 28, B: 22, C: 18, D: 11, E: 15 }, primaryStyle: "A" },
+      { name: "최지아", department: "영업기획부", scores: { A: 19, B: 24, C: 16, D: 15, E: 22 }, primaryStyle: "B" },
+      { name: "정다은", department: "IT기획센터", scores: { A: 21, B: 14, C: 27, D: 16, E: 12 }, primaryStyle: "C" },
+      { name: "강현우", department: "IT기획센터", scores: { A: 16, B: 13, C: 25, D: 22, E: 14 }, primaryStyle: "C" },
+      { name: "윤도현", department: "고객지원팀", scores: { A: 15, B: 18, C: 11, D: 26, E: 21 }, primaryStyle: "D" },
+      { name: "송지효", department: "인재개발원", scores: { A: 23, B: 26, C: 13, D: 12, E: 24 }, primaryStyle: "B" },
+      { name: "한재석", department: "인재개발원", scores: { A: 18, B: 20, C: 14, D: 15, E: 28 }, primaryStyle: "E" },
+    ];
+
+    // Main App State
+    let state = {
+      currentTab: 'intro',
+      userName: '',
+      userDept: '',
+      answers: {}, // { questionId: score }
+      testProgress: 0,
+      finalScores: null,
+      primaryStyle: null,
+      isTrainer: false,
+      submissions: [...MOCK_SUBMISSIONS]
+    };
+
+    let confirmCallback = null; // 커스텀 컨펌 콜백용
+
+    // ==========================================
+    // INITIALIZATION & EVENT LISTENERS
+    // ==========================================
+    window.addEventListener('DOMContentLoaded', () => {
+      // Local storage restore
+      const savedData = localStorage.getItem('cs_solution_submissions');
+      if (savedData) {
+        try {
+          state.submissions = JSON.parse(savedData);
+        } catch (e) {
+          console.error("Local Storage data corrupted, using default submission model.");
+        }
+      }
+      
+      initIntroView();
+      lucide.createIcons();
+    });
+
+    // Custom Alert Box
+    function showAlert(message) {
+      document.getElementById('custom-alert-msg').innerText = message;
+      document.getElementById('custom-alert').classList.remove('hidden');
+    }
+
+    function closeAlert() {
+      document.getElementById('custom-alert').classList.add('hidden');
+    }
+
+    // Custom Confirm Box
+    function showConfirm(message, callback) {
+      document.getElementById('custom-confirm-msg').innerText = message;
+      document.getElementById('custom-confirm').classList.remove('hidden');
+      confirmCallback = callback;
+      lucide.createIcons();
+    }
+
+    function closeConfirm(isConfirmed) {
+      document.getElementById('custom-confirm').classList.add('hidden');
+      if (isConfirmed && confirmCallback) {
+        confirmCallback();
+      }
+      confirmCallback = null;
+    }
+
+    // Tab Router Engine
+    function navigateTab(tabName) {
+      state.currentTab = tabName;
+      
+      // Hide all tabs
+      document.getElementById('tab-intro').classList.add('hidden');
+      document.getElementById('tab-test').classList.add('hidden');
+      document.getElementById('tab-result').classList.add('hidden');
+      document.getElementById('tab-admin-auth').classList.add('hidden');
+      document.getElementById('tab-org').classList.add('hidden');
+
+      // Show targeted tab
+      const targetElement = document.getElementById(`tab-${tabName}`);
+      if (targetElement) {
+        targetElement.classList.remove('hidden');
+      }
+
+      // Update Header Navigation buttons styling
+      const btnTest = document.getElementById('nav-btn-test');
+      const btnOrg = document.getElementById('nav-btn-org');
+      const lockIcon = document.getElementById('nav-lock-icon');
+
+      if (tabName === 'intro' || tabName === 'test' || tabName === 'result') {
+        btnTest.className = "px-3 py-1.5 rounded-lg transition bg-orange-50 text-orange-600 font-semibold";
+        btnOrg.className = "px-3 py-1.5 rounded-lg transition flex items-center space-x-1.5 text-slate-600 hover:text-slate-900 hover:bg-slate-100";
+      } else {
+        btnTest.className = "px-3 py-1.5 rounded-lg transition text-slate-600 hover:text-slate-900 hover:bg-slate-100";
+        btnOrg.className = "px-3 py-1.5 rounded-lg transition flex items-center space-x-1.5 bg-orange-50 text-orange-600 font-semibold";
+      }
+
+      if (state.isTrainer) {
+        btnOrg.querySelector('span').innerText = '조직 통계 대시보드';
+        lockIcon.setAttribute('data-lucide', 'unlock');
+        lockIcon.classList.add('text-emerald-600');
+        document.getElementById('nav-logout-btn').classList.remove('hidden');
+      } else {
+        btnOrg.querySelector('span').innerText = '조직 통계 (강사용)';
+        lockIcon.setAttribute('data-lucide', 'lock');
+        lockIcon.classList.remove('text-emerald-600');
+        document.getElementById('nav-logout-btn').classList.add('hidden');
+      }
+
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+      lucide.createIcons();
+    }
+
+    // ==========================================
+    // MODULE: INTRO VIEW
+    // ==========================================
+    function initIntroView() {
+      // Setup total submissions counter
+      document.getElementById('intro-total-count').innerText = `총 ${state.submissions.length}명 참여 중`;
+
+      // Draw Style Profile Quick Cards on the Right side
+      const listContainer = document.getElementById('intro-styles-list');
+      listContainer.innerHTML = '';
+      
+      Object.entries(STYLE_INFO).forEach(([key, info]) => {
+        const item = document.createElement('div');
+        item.className = "flex items-center space-x-3 bg-white/5 hover:bg-white/10 p-2 rounded-xl transition duration-150";
+        item.innerHTML = `
+          <div class="w-7 h-7 rounded-lg bg-orange-500/20 text-orange-300 font-bold flex items-center justify-center text-sm">
+            ${key}
+          </div>
+          <div class="flex-1 min-w-0">
+            <div class="text-xs font-bold text-slate-200 truncate">${info.title}</div>
+            <div class="text-[10px] text-slate-400 truncate">${info.short}</div>
+          </div>
+        `;
+        listContainer.appendChild(item);
+      });
+    }
+
+    function handleStartTest() {
+      const nameVal = document.getElementById('input-name').value.trim();
+      const deptVal = document.getElementById('input-dept').value.trim();
+
+      if (!nameVal) return showAlert("이름 혹은 닉네임을 입력해 주세요.");
+      if (!deptVal) return showAlert("소속 조직/부서명을 입력해 주세요.");
+
+      state.userName = nameVal;
+      state.userDept = deptVal;
+      state.answers = {};
+      state.testProgress = 0;
+
+      // Update Header/Running UI details
+      document.getElementById('test-user-info').innerText = `${state.userName} 님 / ${state.userDept}`;
+      
+      renderTestQuestions();
+      navigateTab('test');
+    }
+
+    function handleResetTest() {
+      document.getElementById('input-name').value = '';
+      document.getElementById('input-dept').value = '';
+      state.answers = {};
+      state.testProgress = 0;
+      state.finalScores = null;
+      state.primaryStyle = null;
+      navigateTab('intro');
+      initIntroView();
+    }
+
+    // ==========================================
+    // MODULE: TEST ENGINE (RUNNING)
+    // ==========================================
+    function renderTestQuestions() {
+      const startIdx = state.testProgress;
+      const endIdx = startIdx + 5;
+      const currentQuestions = QUESTIONS.slice(startIdx, endIdx);
+      const container = document.getElementById('questions-container');
+      
+      container.innerHTML = '';
+
+      currentQuestions.forEach((q) => {
+        const selectedScore = state.answers[q.id] || null;
+        const card = document.createElement('div');
+        card.className = "bg-white rounded-2xl border border-slate-200/80 shadow-sm p-6 hover:border-slate-300 transition duration-150 animate-fade-in";
+        
+        let scoreButtonsHtml = '';
+        const scores = [
+          { val: 1, label: "매우 그렇지 않다" },
+          { val: 2, label: "그렇지 않다" },
+          { val: 3, label: "보통이다" },
+          { val: 4, label: "그렇다" },
+          { val: 5, label: "매우 그렇다" }
+        ];
+
+        scores.forEach((s) => {
+          const isActive = selectedScore === s.val;
+          scoreButtonsHtml += `
+            <button
+              type="button"
+              onclick="selectAnswerScore(${q.id}, ${s.val})"
+              class="flex flex-col items-center justify-center py-2 px-1 rounded-xl border text-center transition duration-150 ${
+                isActive 
+                  ? 'bg-orange-600 border-orange-600 text-white shadow-md shadow-orange-100' 
+                  : 'bg-slate-50 hover:bg-slate-100/80 border-slate-200/80 text-slate-700'
+              }"
+            >
+              <span class="text-sm font-extrabold block ${isActive ? 'text-white' : 'text-slate-900'}">${s.val}점</span>
+              <span class="text-[10px] mt-1 hidden sm:block opacity-80 ${isActive ? 'text-white' : 'text-slate-500'}">${s.label}</span>
+            </button>
+          `;
+        });
+
+        card.innerHTML = `
+          <div class="flex items-start space-x-4">
+            <div class="w-8 h-8 rounded-full bg-slate-100 text-slate-600 font-extrabold text-xs flex items-center justify-center shrink-0 mt-0.5">
+              ${q.id}
+            </div>
+            <div class="flex-1">
+              <h4 class="text-base font-bold text-slate-900 leading-snug">${q.text}</h4>
+              <div class="mt-5 grid grid-cols-5 gap-2">
+                ${scoreButtonsHtml}
+              </div>
+            </div>
+          </div>
+        `;
+        container.appendChild(card);
+      });
+
+      // Update Navigation elements
+      const progressPercent = Math.round((Object.keys(state.answers).length / QUESTIONS.length) * 100);
+      document.getElementById('test-progress-text').innerText = `${progressPercent}% 완료`;
+      document.getElementById('test-progress-bar').style.width = `${progressPercent}%`;
+
+      document.getElementById('btn-prev-page').disabled = startIdx === 0;
+      document.getElementById('test-page-indicator').innerText = `총 6단계 중 ${Math.floor(startIdx / 5) + 1}단계`;
+
+      const btnNextText = document.getElementById('btn-next-text');
+      if (startIdx + 5 >= QUESTIONS.length) {
+        btnNextText.innerText = '제출 및 진단완료';
+      } else {
+        btnNextText.innerText = '다음 단계';
+      }
+    }
+
+    function selectAnswerScore(qId, score) {
+      state.answers[qId] = score;
+      renderTestQuestions();
+    }
+
+    function handlePrevPage() {
+      if (state.testProgress - 5 >= 0) {
+        state.testProgress -= 5;
+        renderTestQuestions();
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      }
+    }
+
+    function handleNextPage() {
+      // Current Page range validation
+      const startIdx = state.testProgress;
+      const currentPageQuestions = QUESTIONS.slice(startIdx, startIdx + 5);
+      const unAnswered = currentPageQuestions.filter(q => !state.answers[q.id]);
+
+      if (unAnswered.length > 0) {
+        return showAlert("현재 단계의 모든 문항에 답변을 선택해 주세요.");
+      }
+
+      if (startIdx + 5 < QUESTIONS.length) {
+        state.testProgress += 5;
+        renderTestQuestions();
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      } else {
+        compileDiagnosticResult();
+      }
+    }
+
+    // ==========================================
+    // MODULE: COMPILER & SCORE ENGINE
+    // ==========================================
+    function compileDiagnosticResult() {
+      document.getElementById('analyzing-overlay').classList.remove('hidden');
+
+      setTimeout(() => {
+        const totals = { A: 0, B: 0, C: 0, D: 0, E: 0 };
+        
+        QUESTIONS.forEach((q) => {
+          const score = state.answers[q.id] || 3;
+          totals[q.category] += score;
+        });
+
+        // Search for dominant CS style
+        let maxScore = -1;
+        let dominant = 'A';
+        Object.keys(totals).forEach((style) => {
+          if (totals[style] > maxScore) {
+            maxScore = totals[style];
+            dominant = style;
+          }
+        });
+
+        state.finalScores = totals;
+        state.primaryStyle = dominant;
+
+        // Save entry into local submissions state
+        const newRecord = {
+          name: state.userName,
+          department: state.userDept,
+          scores: totals,
+          primaryStyle: dominant,
+          createdAt: new Date().toISOString()
+        };
+
+        state.submissions.unshift(newRecord);
+        localStorage.setItem('cs_solution_submissions', JSON.stringify(state.submissions));
+
+        // Render Results Dashboard View
+        renderPersonalResultView();
+        
+        document.getElementById('analyzing-overlay').classList.add('hidden');
+        navigateTab('result');
+      }, 1800);
+    }
+
+    // ==========================================
+    // MODULE: PERSONAL RESULT VIEW
+    // ==========================================
+    function renderPersonalResultView() {
+      const info = STYLE_INFO[state.primaryStyle];
+      
+      // Render Card badge details
+      const card = document.getElementById('result-badge-card');
+      card.className = `bg-gradient-to-r ${info.color} text-white rounded-3xl p-8 shadow-xl relative overflow-hidden`;
+      
+      document.getElementById('result-user-name').innerText = state.userName;
+      document.getElementById('result-style-title').innerText = `"${info.title}"`;
+      document.getElementById('result-style-desc').innerText = info.desc;
+
+      // Draw Score Bars
+      const barContainer = document.getElementById('result-score-bars');
+      barContainer.innerHTML = '';
+
+      Object.entries(STYLE_INFO).forEach(([key, sInfo]) => {
+        const score = state.finalScores[key] || 0;
+        const pct = Math.min(100, (score / 30) * 100);
+        const isDom = key === state.primaryStyle;
+
+        const wrapper = document.createElement('div');
+        wrapper.className = `p-3.5 rounded-2xl border transition ${isDom ? 'bg-orange-50/50 border-orange-200' : 'bg-slate-50 border-slate-100'}`;
+        wrapper.innerHTML = `
+          <div class="flex items-center justify-between mb-2">
+            <div class="flex items-center space-x-2">
+              <span class="w-6 h-6 rounded-lg text-xs font-extrabold flex items-center justify-center ${isDom ? 'bg-orange-600 text-white' : 'bg-slate-200 text-slate-700'}">
+                ${key}
+              </span>
+              <span class="text-sm font-bold text-slate-900 truncate max-w-[200px] sm:max-w-xs">${sInfo.title}</span>
+              ${isDom ? '<span class="text-[10px] bg-orange-100 text-orange-700 font-extrabold px-1.5 py-0.5 rounded-md">대표</span>' : ''}
+            </div>
+            <span class="text-sm font-extrabold text-slate-900">${score}점</span>
+          </div>
+          <div class="w-full bg-slate-200/60 rounded-full h-2.5 overflow-hidden">
+            <div class="h-full transition-all duration-1000 ${sInfo.barColor}" style="width: ${pct}%"></div>
+          </div>
+        `;
+        barContainer.appendChild(wrapper);
+      });
+
+      // Growth Solutions Mapping
+      document.getElementById('result-strength').innerText = info.strength;
+      document.getElementById('result-weakness').innerText = info.weakness;
+      document.getElementById('result-tip').innerText = info.tip;
+    }
+
+    // ==========================================
+    // MODULE: ADMIN AUTHENTICATION
+    // ==========================================
+    function handleGoToAdmin() {
+      if (state.isTrainer) {
+        renderOrgDashboard();
+        navigateTab('org');
+      } else {
+        document.getElementById('input-passcode').value = '';
+        document.getElementById('auth-error-msg').classList.add('hidden');
+        navigateTab('admin-auth');
+      }
+    }
+
+    function handleAdminVerify(e) {
+      e.preventDefault();
+      const code = document.getElementById('input-passcode').value;
+
+      if (code === ADMIN_PASSCODE) {
+        state.isTrainer = true;
+        document.getElementById('auth-error-msg').classList.add('hidden');
+        renderOrgDashboard();
+        navigateTab('org');
+      } else {
+        document.getElementById('auth-error-text').innerText = '인증 비밀번호가 일치하지 않습니다. 다시 확인해 주세요.';
+        document.getElementById('auth-error-msg').classList.remove('hidden');
+      }
+    }
+
+    function handleAdminLogout() {
+      state.isTrainer = false;
+      navigateTab('intro');
+      showAlert("강사용 대시보드가 성공적으로 잠겼습니다.");
+    }
+
+    // ==========================================
+    // MODULE: ORGANIZATIONAL STATISTICS DASHBOARD
+    // ==========================================
+    const computedStats = () => {
+      if (state.submissions.length === 0) {
+        return {
+          totalCount: 0,
+          averages: { A: 0, B: 0, C: 0, D: 0, E: 0 },
+          styleDistribution: { A: 0, B: 0, C: 0, D: 0, E: 0 },
+          topCompanyStyle: 'A',
+          departments: []
+        };
+      }
+
+      const totalCount = state.submissions.length;
+      const totalsByStyle = { A: 0, B: 0, C: 0, D: 0, E: 0 };
+      const styleDistribution = { A: 0, B: 0, C: 0, D: 0, E: 0 };
+      const departmentStats = {};
+
+      state.submissions.forEach((sub) => {
+        // Core Category scores summary accumulation
+        Object.keys(totalsByStyle).forEach((cat) => {
+          totalsByStyle[cat] += sub.scores[cat] || 0;
+        });
+
+        // Dominant profile compilation
+        if (sub.primaryStyle) {
+          styleDistribution[sub.primaryStyle]++;
+        }
+
+        // Department segregation
+        const dept = sub.department || "미지정";
+        if (!departmentStats[dept]) {
+          departmentStats[dept] = {
+            count: 0,
+            scores: { A: 0, B: 0, C: 0, D: 0, E: 0 },
+            styles: { A: 0, B: 0, C: 0, D: 0, E: 0 }
+          };
+        }
+
+        departmentStats[dept].count++;
+        Object.keys(sub.scores).forEach((cat) => {
+          departmentStats[dept].scores[cat] += sub.scores[cat];
+        });
+        if (sub.primaryStyle) {
+          departmentStats[dept].styles[sub.primaryStyle]++;
+        }
+      });
+
+      // Company averages compile
+      const averages = {};
+      Object.keys(totalsByStyle).forEach((cat) => {
+        averages[cat] = Math.round((totalsByStyle[cat] / totalCount) * 10) / 10;
+      });
+
+      // Select top company-wide style
+      let topCompanyStyle = 'A';
+      let maxAvg = 0;
+      Object.keys(averages).forEach((cat) => {
+        if (averages[cat] > maxAvg) {
+          maxAvg = averages[cat];
+          topCompanyStyle = cat;
+        }
+      });
+
+      // Dept summary compile
+      const deptsArray = Object.keys(departmentStats).map((dName) => {
+        const dInfo = departmentStats[dName];
+        const dAvg = {};
+        
+        Object.keys(dInfo.scores).forEach((cat) => {
+          dAvg[cat] = Math.round((dInfo.scores[cat] / dInfo.count) * 10) / 10;
+        });
+
+        // Dominant style in the department
+        let dominantStyle = 'A';
+        let maxStyleAvg = 0;
+        Object.keys(dAvg).forEach((cat) => {
+          if (dAvg[cat] > maxStyleAvg) {
+            maxStyleAvg = dAvg[cat];
+            dominantStyle = cat;
+          }
+        });
+
+        return {
+          name: dName,
+          count: dInfo.count,
+          averages: dAvg,
+          dominantStyle
+        };
+      });
+
+      return {
+        totalCount,
+        averages,
+        styleDistribution,
+        topCompanyStyle,
+        departments: deptsArray
+      };
+    };
+
+    function renderOrgDashboard() {
+      const stats = computedStats();
+      if (!stats) return;
+
+      // Draw Top Cards Details
+      document.getElementById('org-kpi-total').innerText = `${stats.totalCount}명`;
+      document.getElementById('org-kpi-dominant').innerText = stats.totalCount > 0 ? STYLE_INFO[stats.topCompanyStyle].title.split('(')[0].trim() : "데이터 없음";
+      document.getElementById('org-kpi-depts').innerText = `${stats.departments.length}개 부서`;
+
+      // 1. Draw Distribution Chart bars
+      const distContainer = document.getElementById('org-distribution-container');
+      distContainer.innerHTML = '';
+
+      Object.entries(STYLE_INFO).forEach(([key, info]) => {
+        const count = stats.styleDistribution[key] || 0;
+        const pct = stats.totalCount > 0 ? Math.round((count / stats.totalCount) * 100) : 0;
+
+        const row = document.createElement('div');
+        row.className = "flex items-center space-x-3";
+        row.innerHTML = `
+          <span class="w-10 text-xs font-bold text-slate-500">${key}유형</span>
+          <div class="flex-1 bg-slate-100 h-6 rounded-lg overflow-hidden relative">
+            <div class="h-full ${info.barColor} transition-all duration-1000" style="width: ${pct}%"></div>
+            <span class="absolute inset-y-0 left-2.5 flex items-center text-[10px] font-bold text-slate-800">
+              ${info.short}
+            </span>
+          </div>
+          <span class="w-12 text-right text-xs font-black text-slate-950">${count}명 (${pct}%)</span>
+        `;
+        distContainer.appendChild(row);
+      });
+
+      // 2. Draw Company Category averages bar chart (vertical style)
+      const barsContainer = document.getElementById('org-averages-bars');
+      const labelsContainer = document.getElementById('org-averages-labels');
+      
+      barsContainer.innerHTML = '';
+      labelsContainer.innerHTML = '';
+
+      Object.entries(STYLE_INFO).forEach(([key, info]) => {
+        const avg = stats.averages[key] || 0;
+        const heightPct = (avg / 30) * 100;
+
+        // Render bar
+        const barItem = document.createElement('div');
+        barItem.className = "flex flex-col items-center group cursor-pointer h-full justify-end";
+        barItem.innerHTML = `
+          <span class="text-[10px] text-slate-400 group-hover:text-slate-900 font-bold transition duration-150 mb-2">
+            ${avg}점
+          </span>
+          <div class="w-full bg-slate-50 group-hover:bg-slate-100 rounded-t-xl h-full flex items-end overflow-hidden">
+            <div class="w-full transition-all duration-1000 rounded-t-xl ${info.barColor} opacity-85 group-hover:opacity-100" style="height: ${heightPct}%"></div>
+          </div>
+          <span class="text-xs font-bold text-slate-800 mt-2 block">${key}</span>
+        `;
+        barsContainer.appendChild(barItem);
+
+        // Render label description
+        const labelItem = document.createElement('div');
+        labelItem.className = "text-[9px] text-slate-500 font-bold leading-tight truncate";
+        labelItem.innerText = info.title.split('(')[0].trim();
+        labelsContainer.appendChild(labelItem);
+      });
+
+      // 3. Render Department Table lists
+      const tableBody = document.getElementById('org-dept-table-rows');
+      tableBody.innerHTML = '';
+
+      if (stats.departments.length === 0) {
+        const emptyRow = document.createElement('tr');
+        emptyRow.className = "text-center";
+        emptyRow.innerHTML = `
+          <td colspan="4" class="py-12 text-slate-400 font-medium">
+            현재 등록된 진단 통계 데이터가 없습니다. 먼저 신규 진단을 생성하거나 시뮬레이션 데이터를 주입해 주세요.
+          </td>
+        `;
+        tableBody.appendChild(emptyRow);
+      } else {
+        stats.departments.forEach((dept) => {
+          const row = document.createElement('tr');
+          row.className = "hover:bg-slate-50/50 transition";
+          row.innerHTML = `
+            <td class="py-4 px-6 font-bold text-slate-900 flex items-center space-x-2">
+              <i data-lucide="briefcase" class="h-4 w-4 text-slate-400"></i>
+              <span>${dept.name}</span>
+            </td>
+            <td class="py-4 px-6 text-center font-bold text-slate-800">
+              ${dept.count}명
+            </td>
+            <td class="py-4 px-6">
+              <span class="inline-flex items-center space-x-1.5 px-2.5 py-1 rounded-full text-xs font-semibold ${STYLE_INFO[dept.dominantStyle].bgColor}">
+                <span class="w-2 h-2 rounded-full ${STYLE_INFO[dept.dominantStyle].barColor}"></span>
+                <span class="text-slate-800">${STYLE_INFO[dept.dominantStyle].title.split('(')[0].trim()}</span>
+              </span>
+            </td>
+            <td class="py-4 px-6 font-mono text-xs text-slate-500">
+              ${dept.averages.A} / ${dept.averages.B} / ${dept.averages.C} / ${dept.averages.D} / ${dept.averages.E}
+            </td>
+          `;
+          tableBody.appendChild(row);
+        });
+      }
+
+      lucide.createIcons();
+    }
+
+    // 통계 데이터 전체 삭제 기능
+    function handleClearAllSubmissions() {
+      showConfirm("현재까지 누적 저장된 모든 교육생의 진단 기록을 영구히 초기화하시겠습니까?", () => {
+        state.submissions = [];
+        localStorage.removeItem('cs_solution_submissions');
+        renderOrgDashboard();
+        showAlert("수집된 통계 데이터가 말끔히 초기화되었습니다.");
+      });
+    }
+
+    function handleAddSimulatedUser() {
+      const names = ["김철수", "이지현", "박성훈", "최미경", "황정민", "배수지", "정해인", "임요한"];
+      const depts = ["고객지원팀", "영업기획부", "IT기획센터", "인재개발원", "마케팅본부"];
+      
+      const randomScores = {};
+      let maxVal = 0;
+      let domStyle = 'A';
+
+      ['A', 'B', 'C', 'D', 'E'].forEach((cat) => {
+        const val = Math.floor(Math.random() * 15) + 12; // Generates scores between 12 and 26
+        randomScores[cat] = val;
+        if (val > maxVal) {
+          maxVal = val;
+          domStyle = cat;
+        }
+      });
+
+      const newUser = {
+        name: names[Math.floor(Math.random() * names.length)],
+        department: depts[Math.floor(Math.random() * depts.length)],
+        scores: randomScores,
+        primaryStyle: domStyle,
+        createdAt: new Date().toISOString()
+      };
+
+      state.submissions.unshift(newUser);
+      localStorage.setItem('cs_solution_submissions', JSON.stringify(state.submissions));
+      
+      renderOrgDashboard();
+      showAlert(`${newUser.department} ${newUser.name} 님의 가상 진단 데이터가 실시간 추가되었습니다.`);
+    }
+
+    // ==========================================
+    // MODULE: CHROME HTML EXPORT / LOCAL DOWNLOAD SYSTEM
+    // ==========================================
+    function downloadEntireApp() {
+      // 1. Serialize the state to embed directly inside the saved HTML file for persistent local offline storage
+      const serializedStateStr = JSON.stringify(state.submissions);
+      
+      // 2. Fetch current html document source
+      let docSource = document.documentElement.outerHTML;
+
+      // 3. Inject current state directly as a default script variable to avoid loss of local statistics when saving
+      const injectionTarget = "let state = {";
+      const replacement = `// Embedded Saved Submissions Data\n    const LOCAL_RESTORED_DATA = ${serializedStateStr};\n    let state = {`;
+      
+      docSource = docSource.replace(injectionTarget, replacement);
+      
+      // Update state's default submissions array variable internally inside the saved template code
+      const defaultStateSubmissionsTarget = "submissions: [...MOCK_SUBMISSIONS]";
+      const defaultStateSubmissionsReplacement = "submissions: typeof LOCAL_RESTORED_DATA !== 'undefined' ? LOCAL_RESTORED_DATA : [...MOCK_SUBMISSIONS]";
+      docSource = docSource.replace(defaultStateSubmissionsTarget, defaultStateSubmissionsReplacement);
+
+      // Create blob and download as a true Chrome HTML document (.html)
+      const blob = new Blob([docSource], { type: 'text/html' });
+      const url = URL.createObjectURL(blob);
+      const tempAnchor = document.createElement('a');
+      tempAnchor.href = url;
+      tempAnchor.download = `더하기교육원_CS진단_솔루션_${state.userName || '통합본'}.html`;
+      document.body.appendChild(tempAnchor);
+      tempAnchor.click();
+      document.body.removeChild(tempAnchor);
+      URL.revokeObjectURL(url);
+    }
+  </script>
+</body>
+</html>
