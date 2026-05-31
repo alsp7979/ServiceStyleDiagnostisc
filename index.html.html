@@ -10,6 +10,8 @@
   <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700;900&display=swap" rel="stylesheet">
   <!-- Lucide Icons CDN -->
   <script src="https://unpkg.com/lucide@latest"></script>
+  <!-- html2pdf.js CDN (강력하고 깔끔한 PDF 저장 전용 라이브러리) -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
   
   <style>
     body {
@@ -144,17 +146,18 @@
           
           <p class="mt-4 text-slate-600 leading-relaxed text-sm lg:text-base">
             본 진단 프로그램은 서비스 현장에서 마주하는 다양한 스트레스와 상황 판단 능력을 30가지 문항을 통해 정밀 측정합니다. 
+            중간값 없는 **6지 선다(6점 척도)** 설계를 도입하여, 더욱 정밀하고 명확한 자아 성향 판정이 가능합니다.
             진단 완료 시 **나만의 CS 유형 및 성적표**를 즉시 확인하실 수 있습니다.
           </p>
 
           <div class="mt-8 space-y-3.5">
             <div class="flex items-start space-x-3">
               <i data-lucide="check-circle-2" class="h-5 w-5 text-orange-500 shrink-0 mt-0.5"></i>
-              <span class="text-sm text-slate-700"><strong>5대 성향 판별:</strong> 해결사형(A), 소통가형(B), 전문가형(C), 지원가형(D), 배려자형(E)</span>
+              <span class="text-sm text-slate-700"><strong>6점 척도 고정:</strong> 애매한 중간 답변('보통이다')을 배제한 정밀한 분석</span>
             </div>
             <div class="flex items-start space-x-3">
               <i data-lucide="check-circle-2" class="h-5 w-5 text-orange-500 shrink-0 mt-0.5"></i>
-              <span class="text-sm text-slate-700"><strong>개별 맞춤 분석:</strong> 교육생 개별 점수와 취약점 개선 행동 팁 제공</span>
+              <span class="text-sm text-slate-700"><strong>5대 성향 판별:</strong> 해결사형(A), 소통가형(B), 전문가형(C), 지원가형(D), 배려자형(E) (각 유형별 36점 만점)</span>
             </div>
             <div class="flex items-start space-x-3">
               <i data-lucide="check-circle-2" class="h-5 w-5 text-orange-500 shrink-0 mt-0.5"></i>
@@ -245,11 +248,6 @@
               <div class="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse"></div>
               <span class="text-[10px] text-emerald-600 font-bold uppercase tracking-wider">Local DB System Active</span>
             </div>
-            <!-- Download Button in Intro -->
-            <button onclick="downloadEntireApp()" class="text-xs text-orange-600 hover:text-orange-800 font-bold flex items-center space-x-1">
-              <i data-lucide="file-text" class="h-3 w-3"></i>
-              <span>Chrome HTML 저장</span>
-            </button>
           </div>
         </div>
       </div>
@@ -262,7 +260,7 @@
         <div class="flex items-center justify-between mb-4">
           <div class="flex items-center space-x-2">
             <span class="text-xs font-extrabold bg-orange-100 text-orange-700 px-2.5 py-1 rounded-full uppercase">
-              진단 진행 중
+              진단 진행 중 (6지 선다)
             </span>
             <span id="test-user-info" class="text-xs font-medium text-slate-500">
               홍길동 님 / 영업부
@@ -319,7 +317,7 @@
 
         <div class="relative">
           <span class="text-xs font-bold tracking-widest text-white/80 bg-white/20 px-3 py-1 rounded-full uppercase">
-            종합 분석 성적표
+            종합 분석 성적표 (6점 척도 기준)
           </span>
           <h2 class="text-2xl sm:text-3xl font-extrabold mt-4">
             <span id="result-user-name">홍길동</span> 님의 대표 CS 스타일은
@@ -341,7 +339,7 @@
         <div class="lg:col-span-6 bg-white rounded-3xl border border-slate-200 p-6 shadow-sm flex flex-col justify-between print-card">
           <div>
             <h3 class="text-lg font-bold text-slate-900 mb-1">성향 유형별 다각 진단표</h3>
-            <p class="text-xs text-slate-500 mb-6">각 영역별 최고점수 30점 만점 기준</p>
+            <p class="text-xs text-slate-500 mb-6 font-medium text-orange-600">각 영역별 최고점수 36점 만점 기준</p>
 
             <div id="result-score-bars" class="space-y-4">
               <!-- Dynamic bars will be rendered here -->
@@ -407,18 +405,18 @@
               <span>다시 진단하기</span>
             </button>
             <button 
-              onclick="window.print()"
-              class="flex-1 bg-orange-600 hover:bg-orange-700 text-white font-bold py-3 px-4 rounded-xl transition text-sm flex items-center justify-center space-x-2 shadow-md shadow-orange-100"
+              onclick="downloadPDF()"
+              class="flex-1 bg-orange-600 hover:bg-orange-700 text-white font-bold py-3 px-4 rounded-xl transition text-sm flex items-center justify-center space-x-2 shadow-lg shadow-orange-100"
             >
-              <i data-lucide="file-text" class="h-4 w-4"></i>
-              <span>진단 성적표 인쇄 / PDF 저장</span>
+              <i data-lucide="file-down" class="h-4 w-4"></i>
+              <span>PDF 파일 저장</span>
             </button>
             <button 
-              onclick="downloadEntireApp()"
-              class="flex-1 bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-3 px-4 rounded-xl transition text-sm flex items-center justify-center space-x-2 shadow-md shadow-emerald-100"
+              onclick="window.print()"
+              class="flex-1 bg-slate-800 hover:bg-slate-900 text-white font-bold py-3 px-4 rounded-xl transition text-sm flex items-center justify-center space-x-2 shadow-md"
             >
-              <i data-lucide="download" class="h-4 w-4"></i>
-              <span>HTML 파일로 앱 저장</span>
+              <i data-lucide="printer" class="h-4 w-4"></i>
+              <span>성적표 인쇄</span>
             </button>
           </div>
         </div>
@@ -449,7 +447,7 @@
               type="password" 
               id="input-passcode"
               placeholder="강사 전용 비밀번호를 입력해 주세요"
-              class="w-full bg-slate-50 border border-slate-200 focus:border-orange-500 focus:ring-1 focus:ring-orange-500 rounded-xl px-4 py-3 text-sm transition outline-none"
+              class="w-full bg-slate-50 border border-orange-200 focus:border-orange-500 focus:ring-1 focus:ring-orange-500 rounded-xl px-4 py-3 text-sm transition outline-none"
               required
             />
             <span class="text-[10px] text-slate-400 block mt-1.5 text-right">※ 초기 비밀번호: thehagiedu</span>
@@ -564,7 +562,7 @@
         <!-- Distribution Graph -->
         <div class="lg:col-span-5 bg-white rounded-3xl border border-slate-200 p-6 shadow-sm print-card">
           <h3 class="text-base font-bold text-slate-950 mb-1">조직 내 CS 스타일 분포도</h3>
-          <p class="text-xs text-slate-500 mb-6">주력 스타일로 판명된 구성원들의 유형 비중</p>
+          <p class="text-xs text-slate-500 mb-6">주력 스타일로 판명된 구성원들의 유형 비중 (6점 척도 기준)</p>
 
           <div id="org-distribution-container" class="space-y-4">
             <!-- Dynamic elements generated here -->
@@ -574,7 +572,7 @@
         <!-- Company Averages Graph -->
         <div class="lg:col-span-7 bg-white rounded-3xl border border-slate-200 p-6 shadow-sm print-card">
           <h3 class="text-base font-bold text-slate-950 mb-1">5대 핵심 마인드셋 평균값</h3>
-          <p class="text-xs text-slate-500 mb-6">참여자 전원의 CS 항목별 30점 만점 대비 평균 점수</p>
+          <p class="text-xs text-slate-500 mb-6 font-semibold text-orange-600">참여자 전원의 CS 항목별 36점 만점 대비 평균 점수</p>
 
           <div id="org-averages-bars" class="grid grid-cols-5 gap-3 h-48 items-end border-b border-slate-200 pb-2">
             <!-- Dynamic vertical bar chart here -->
@@ -591,7 +589,7 @@
       <div class="bg-white rounded-3xl border border-slate-200 shadow-sm overflow-hidden print-card">
         <div class="p-6 border-b border-slate-100">
           <h3 class="text-base font-bold text-slate-950 mb-1">소속 부서별 상세 통계</h3>
-          <p class="text-xs text-slate-500">부서별 CS 참여율과 강점 분야 요약표</p>
+          <p class="text-xs text-slate-500">부서별 CS 참여율과 강점 분야 요약표 (평균은 36점 만점)</p>
         </div>
 
         <div class="overflow-x-auto">
@@ -682,7 +680,7 @@
         bgColor: "bg-amber-50 border-amber-100",
         barColor: "bg-amber-500",
         desc: "마치 오랜 친구를 대하듯 친밀하고 유쾌한 웃음으로 고객의 마음을 사르르 녹이는 매력적인 소통가입니다. 고객과의 심리적 거리를 좁히는 데 탁월하나, 격식 있는 접객을 원하거나 공과 사의 구분을 엄격히 바라는 고객에게는 간혹 당황스러운 경험을 줄 수 있습니다.",
-        strength: "탁월한 아이스브레이킹, 긍정적인 분위기 메이킹, 편안한 소통 감각",
+        strength: "탁출한 아이스브레이킹, 긍정적인 분위기 메이킹, 편안한 소통 감각",
         weakness: "엄격하고 세련된 격식 부족, 고객의 예민함에 정색하거나 쉽게 상처받는 편",
         tip: "친근함은 최고의 무기이지만, 처음 만나는 고객이나 다소 격식을 중시해 보이는 고객 앞에서는 바른 자세와 세련된 비즈니스 존칭어를 먼저 확보해두는 것이 안전합니다."
       },
@@ -724,6 +722,7 @@
       }
     };
 
+    // CS Diagnosis questions (Total 30)
     const QUESTIONS = [
       { id: 1, text: "본인 욕구를 모른 채 오는 고객들이 많다.", category: "A" },
       { id: 2, text: "매출 정도나 대상에 따른 차별대우는 당연하다.", category: "C" },
@@ -757,16 +756,17 @@
       { id: 30, text: "나도 모르게 종종 고객을 무시하는 태도를 보일 때가 있다.", category: "C" }
     ];
 
+    // Seeding mock submissions adapted for the 6-point scale (A maximum score per category is 36)
     const MOCK_SUBMISSIONS = [
-      { name: "김민준", department: "고객지원팀", scores: { A: 24, B: 18, C: 12, D: 14, E: 26 }, primaryStyle: "E" },
-      { name: "이서연", department: "고객지원팀", scores: { A: 22, B: 25, C: 15, D: 13, E: 20 }, primaryStyle: "B" },
-      { name: "박우진", department: "영업기획부", scores: { A: 28, B: 22, C: 18, D: 11, E: 15 }, primaryStyle: "A" },
-      { name: "최지아", department: "영업기획부", scores: { A: 19, B: 24, C: 16, D: 15, E: 22 }, primaryStyle: "B" },
-      { name: "정다은", department: "IT기획센터", scores: { A: 21, B: 14, C: 27, D: 16, E: 12 }, primaryStyle: "C" },
-      { name: "강현우", department: "IT기획센터", scores: { A: 16, B: 13, C: 25, D: 22, E: 14 }, primaryStyle: "C" },
-      { name: "윤도현", department: "고객지원팀", scores: { A: 15, B: 18, C: 11, D: 26, E: 21 }, primaryStyle: "D" },
-      { name: "송지효", department: "인재개발원", scores: { A: 23, B: 26, C: 13, D: 12, E: 24 }, primaryStyle: "B" },
-      { name: "한재석", department: "인재개발원", scores: { A: 18, B: 20, C: 14, D: 15, E: 28 }, primaryStyle: "E" },
+      { name: "김민준", department: "고객지원팀", scores: { A: 28, B: 20, C: 14, D: 16, E: 32 }, primaryStyle: "E" },
+      { name: "이서연", department: "고객지원팀", scores: { A: 25, B: 31, C: 17, D: 15, E: 23 }, primaryStyle: "B" },
+      { name: "박우진", department: "영업기획부", scores: { A: 33, B: 26, C: 21, D: 12, E: 18 }, primaryStyle: "A" },
+      { name: "최지아", department: "영업기획부", scores: { A: 22, B: 29, C: 19, D: 17, E: 26 }, primaryStyle: "B" },
+      { name: "정다은", department: "IT기획센터", scores: { A: 25, B: 16, C: 32, D: 19, E: 14 }, primaryStyle: "C" },
+      { name: "강현우", department: "IT기획센터", scores: { A: 19, B: 15, C: 30, D: 26, E: 16 }, primaryStyle: "C" },
+      { name: "윤도현", department: "고객지원팀", scores: { A: 17, B: 21, C: 13, D: 31, E: 25 }, primaryStyle: "D" },
+      { name: "송지효", department: "인재개발원", scores: { A: 27, B: 32, C: 15, D: 14, E: 29 }, primaryStyle: "B" },
+      { name: "한재석", department: "인재개발원", scores: { A: 21, B: 24, C: 16, D: 18, E: 34 }, primaryStyle: "E" },
     ];
 
     // Main App State
@@ -782,53 +782,11 @@
       submissions: [...MOCK_SUBMISSIONS]
     };
 
-    let confirmCallback = null; // 커스텀 컨펌 콜백용
+    let confirmCallback = null;
 
     // ==========================================
-    // INITIALIZATION & EVENT LISTENERS
+    // MODULE: COMPONENT CONTROLLERS & GENERAL SYSTEM
     // ==========================================
-    window.addEventListener('DOMContentLoaded', () => {
-      // Local storage restore
-      const savedData = localStorage.getItem('cs_solution_submissions');
-      if (savedData) {
-        try {
-          state.submissions = JSON.parse(savedData);
-        } catch (e) {
-          console.error("Local Storage data corrupted, using default submission model.");
-        }
-      }
-      
-      initIntroView();
-      lucide.createIcons();
-    });
-
-    // Custom Alert Box
-    function showAlert(message) {
-      document.getElementById('custom-alert-msg').innerText = message;
-      document.getElementById('custom-alert').classList.remove('hidden');
-    }
-
-    function closeAlert() {
-      document.getElementById('custom-alert').classList.add('hidden');
-    }
-
-    // Custom Confirm Box
-    function showConfirm(message, callback) {
-      document.getElementById('custom-confirm-msg').innerText = message;
-      document.getElementById('custom-confirm').classList.remove('hidden');
-      confirmCallback = callback;
-      lucide.createIcons();
-    }
-
-    function closeConfirm(isConfirmed) {
-      document.getElementById('custom-confirm').classList.add('hidden');
-      if (isConfirmed && confirmCallback) {
-        confirmCallback();
-      }
-      confirmCallback = null;
-    }
-
-    // Tab Router Engine
     function navigateTab(tabName) {
       state.currentTab = tabName;
       
@@ -901,6 +859,9 @@
       });
     }
 
+    // ==========================================
+    // MODULE: INTRO CONTROLLER (START & RESET) - FIXED & RESTORED
+    // ==========================================
     function handleStartTest() {
       const nameVal = document.getElementById('input-name').value.trim();
       const deptVal = document.getElementById('input-dept').value.trim();
@@ -948,12 +909,14 @@
         card.className = "bg-white rounded-2xl border border-slate-200/80 shadow-sm p-6 hover:border-slate-300 transition duration-150 animate-fade-in";
         
         let scoreButtonsHtml = '';
+        // 6-point scale options (6지 선다)
         const scores = [
           { val: 1, label: "매우 그렇지 않다" },
           { val: 2, label: "그렇지 않다" },
-          { val: 3, label: "보통이다" },
-          { val: 4, label: "그렇다" },
-          { val: 5, label: "매우 그렇다" }
+          { val: 3, label: "약간 그렇지 않다" },
+          { val: 4, label: "약간 그렇다" },
+          { val: 5, label: "그렇다" },
+          { val: 6, label: "매우 그렇다" }
         ];
 
         scores.forEach((s) => {
@@ -962,14 +925,14 @@
             <button
               type="button"
               onclick="selectAnswerScore(${q.id}, ${s.val})"
-              class="flex flex-col items-center justify-center py-2 px-1 rounded-xl border text-center transition duration-150 ${
+              class="flex flex-col items-center justify-center py-2.5 px-1 rounded-xl border text-center transition duration-150 ${
                 isActive 
-                  ? 'bg-orange-600 border-orange-600 text-white shadow-md shadow-orange-100' 
+                  ? 'bg-orange-600 border-orange-600 text-white shadow-md shadow-orange-100 font-bold' 
                   : 'bg-slate-50 hover:bg-slate-100/80 border-slate-200/80 text-slate-700'
               }"
             >
               <span class="text-sm font-extrabold block ${isActive ? 'text-white' : 'text-slate-900'}">${s.val}점</span>
-              <span class="text-[10px] mt-1 hidden sm:block opacity-80 ${isActive ? 'text-white' : 'text-slate-500'}">${s.label}</span>
+              <span class="text-[10px] mt-1 hidden sm:block opacity-95 leading-tight ${isActive ? 'text-white' : 'text-slate-500'}">${s.label}</span>
             </button>
           `;
         });
@@ -981,7 +944,7 @@
             </div>
             <div class="flex-1">
               <h4 class="text-base font-bold text-slate-900 leading-snug">${q.text}</h4>
-              <div class="mt-5 grid grid-cols-5 gap-2">
+              <div class="mt-5 grid grid-cols-3 sm:grid-cols-6 gap-2">
                 ${scoreButtonsHtml}
               </div>
             </div>
@@ -1006,36 +969,12 @@
       }
     }
 
+    // ==========================================
+    // MODULE: ANSWER EVENT HANDLER
+    // ==========================================
     function selectAnswerScore(qId, score) {
       state.answers[qId] = score;
       renderTestQuestions();
-    }
-
-    function handlePrevPage() {
-      if (state.testProgress - 5 >= 0) {
-        state.testProgress -= 5;
-        renderTestQuestions();
-        window.scrollTo({ top: 0, behavior: 'smooth' });
-      }
-    }
-
-    function handleNextPage() {
-      // Current Page range validation
-      const startIdx = state.testProgress;
-      const currentPageQuestions = QUESTIONS.slice(startIdx, startIdx + 5);
-      const unAnswered = currentPageQuestions.filter(q => !state.answers[q.id]);
-
-      if (unAnswered.length > 0) {
-        return showAlert("현재 단계의 모든 문항에 답변을 선택해 주세요.");
-      }
-
-      if (startIdx + 5 < QUESTIONS.length) {
-        state.testProgress += 5;
-        renderTestQuestions();
-        window.scrollTo({ top: 0, behavior: 'smooth' });
-      } else {
-        compileDiagnosticResult();
-      }
     }
 
     // ==========================================
@@ -1099,17 +1038,17 @@
       document.getElementById('result-style-title').innerText = `"${info.title}"`;
       document.getElementById('result-style-desc').innerText = info.desc;
 
-      // Draw Score Bars
+      // Draw Score Bars based on 36 max points (6 questions * 6 points max = 36 points)
       const barContainer = document.getElementById('result-score-bars');
       barContainer.innerHTML = '';
 
       Object.entries(STYLE_INFO).forEach(([key, sInfo]) => {
         const score = state.finalScores[key] || 0;
-        const pct = Math.min(100, (score / 30) * 100);
+        const pct = Math.min(100, (score / 36) * 100);
         const isDom = key === state.primaryStyle;
 
         const wrapper = document.createElement('div');
-        wrapper.className = `p-3.5 rounded-2xl border transition ${isDom ? 'bg-orange-50/50 border-orange-200' : 'bg-slate-50 border-slate-100'}`;
+        wrapper.className = `p-3.5 rounded-2xl border transition ${isDom ? 'bg-indigo-50/50 border-indigo-200' : 'bg-slate-50 border-slate-100'}`;
         wrapper.innerHTML = `
           <div class="flex items-center justify-between mb-2">
             <div class="flex items-center space-x-2">
@@ -1119,7 +1058,7 @@
               <span class="text-sm font-bold text-slate-900 truncate max-w-[200px] sm:max-w-xs">${sInfo.title}</span>
               ${isDom ? '<span class="text-[10px] bg-orange-100 text-orange-700 font-extrabold px-1.5 py-0.5 rounded-md">대표</span>' : ''}
             </div>
-            <span class="text-sm font-extrabold text-slate-900">${score}점</span>
+            <span class="text-sm font-extrabold text-slate-900">${score}점 <span class="text-xs text-slate-400 font-normal">/ 36점</span></span>
           </div>
           <div class="w-full bg-slate-200/60 rounded-full h-2.5 overflow-hidden">
             <div class="h-full transition-all duration-1000 ${sInfo.barColor}" style="width: ${pct}%"></div>
@@ -1148,6 +1087,7 @@
       }
     }
 
+    // Admin Verification handler
     function handleAdminVerify(e) {
       e.preventDefault();
       const code = document.getElementById('input-passcode').value;
@@ -1302,7 +1242,7 @@
         distContainer.appendChild(row);
       });
 
-      // 2. Draw Company Category averages bar chart (vertical style)
+      // 2. Draw Company Category averages bar chart (vertical style, Max is now 36)
       const barsContainer = document.getElementById('org-averages-bars');
       const labelsContainer = document.getElementById('org-averages-labels');
       
@@ -1311,7 +1251,7 @@
 
       Object.entries(STYLE_INFO).forEach(([key, info]) => {
         const avg = stats.averages[key] || 0;
-        const heightPct = (avg / 30) * 100;
+        const heightPct = (avg / 36) * 100;
 
         // Render bar
         const barItem = document.createElement('div');
@@ -1376,7 +1316,7 @@
       lucide.createIcons();
     }
 
-    // 통계 데이터 전체 삭제 기능
+    // Clear All Cumulative Submissions
     function handleClearAllSubmissions() {
       showConfirm("현재까지 누적 저장된 모든 교육생의 진단 기록을 영구히 초기화하시겠습니까?", () => {
         state.submissions = [];
@@ -1386,6 +1326,7 @@
       });
     }
 
+    // Inject Demo Simulated Users adapted for 6-point scale (range 15 to 35)
     function handleAddSimulatedUser() {
       const names = ["김철수", "이지현", "박성훈", "최미경", "황정민", "배수지", "정해인", "임요한"];
       const depts = ["고객지원팀", "영업기획부", "IT기획센터", "인재개발원", "마케팅본부"];
@@ -1395,7 +1336,7 @@
       let domStyle = 'A';
 
       ['A', 'B', 'C', 'D', 'E'].forEach((cat) => {
-        const val = Math.floor(Math.random() * 15) + 12; // Generates scores between 12 and 26
+        const val = Math.floor(Math.random() * 18) + 15; // Generates scores between 15 and 33
         randomScores[cat] = val;
         if (val > maxVal) {
           maxVal = val;
@@ -1419,36 +1360,99 @@
     }
 
     // ==========================================
-    // MODULE: CHROME HTML EXPORT / LOCAL DOWNLOAD SYSTEM
+    // MODULE: PDF EXPORT SYSTEM (html2pdf.js)
     // ==========================================
-    function downloadEntireApp() {
-      // 1. Serialize the state to embed directly inside the saved HTML file for persistent local offline storage
-      const serializedStateStr = JSON.stringify(state.submissions);
+    function downloadPDF() {
+      document.getElementById('analyzing-overlay').classList.remove('hidden');
+      const progressText = document.querySelector('#analyzing-overlay p');
+      const subText = document.querySelector('#analyzing-overlay p:last-child');
       
-      // 2. Fetch current html document source
-      let docSource = document.documentElement.outerHTML;
+      const originalProgressText = progressText.innerText;
+      const originalSubText = subText.innerText;
+      
+      progressText.innerText = "PDF 성적표 파일 생성 중...";
+      subText.innerText = "진단 데이터를 정밀 컴파일하여 소장용 PDF 보고서를 제작하고 있습니다.";
 
-      // 3. Inject current state directly as a default script variable to avoid loss of local statistics when saving
-      const injectionTarget = "let state = {";
-      const replacement = `// Embedded Saved Submissions Data\n    const LOCAL_RESTORED_DATA = ${serializedStateStr};\n    let state = {`;
-      
-      docSource = docSource.replace(injectionTarget, replacement);
-      
-      // Update state's default submissions array variable internally inside the saved template code
-      const defaultStateSubmissionsTarget = "submissions: [...MOCK_SUBMISSIONS]";
-      const defaultStateSubmissionsReplacement = "submissions: typeof LOCAL_RESTORED_DATA !== 'undefined' ? LOCAL_RESTORED_DATA : [...MOCK_SUBMISSIONS]";
-      docSource = docSource.replace(defaultStateSubmissionsTarget, defaultStateSubmissionsReplacement);
+      setTimeout(() => {
+        const element = document.getElementById('tab-result').cloneNode(true);
+        const elementsToRemove = element.querySelectorAll('.no-print, button, nav');
+        elementsToRemove.forEach(el => el.remove());
+        
+        const headerDecoration = document.createElement('div');
+        headerDecoration.className = "border-b-2 border-orange-500 pb-4 mb-6 flex justify-between items-end";
+        headerDecoration.innerHTML = `
+          <div>
+            <h4 class="text-xs font-bold text-orange-600">더하기(+) 교육 컨설팅 그룹</h4>
+            <h1 class="text-xl font-extrabold text-slate-900 tracking-tight">CS Style Solution 종합 성적표 (6점 척도)</h1>
+          </div>
+          <span class="text-xs text-slate-400 font-medium">진단일: ${new Date().toLocaleDateString('ko-KR')}</span>
+        `;
+        element.insertBefore(headerDecoration, element.firstChild);
 
-      // Create blob and download as a true Chrome HTML document (.html)
-      const blob = new Blob([docSource], { type: 'text/html' });
-      const url = URL.createObjectURL(blob);
-      const tempAnchor = document.createElement('a');
-      tempAnchor.href = url;
-      tempAnchor.download = `더하기교육원_CS진단_솔루션_${state.userName || '통합본'}.html`;
-      document.body.appendChild(tempAnchor);
-      tempAnchor.click();
-      document.body.removeChild(tempAnchor);
-      URL.revokeObjectURL(url);
+        element.style.padding = "20px 30px";
+        element.style.background = "#ffffff";
+
+        const activeProgressBars = element.querySelectorAll('.transition-all');
+        activeProgressBars.forEach(bar => {
+          const targetWidth = bar.style.width;
+          if (targetWidth) {
+            bar.style.width = targetWidth;
+          }
+        });
+
+        const opt = {
+          margin:       [10, 10, 15, 10],
+          filename:     `더하기교육원_CS진단결과_${state.userName || '교육생'}.pdf`,
+          image:        { type: 'jpeg', quality: 0.98 },
+          html2canvas:  { 
+            scale: 2, 
+            useCORS: true,
+            letterRendering: true
+          },
+          jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' }
+        };
+
+        html2pdf().set(opt).from(element).save().then(() => {
+          progressText.innerText = originalProgressText;
+          subText.innerText = originalSubText;
+          document.getElementById('analyzing-overlay').classList.add('hidden');
+        }).catch(err => {
+          console.error("PDF generation failed:", err);
+          progressText.innerText = originalProgressText;
+          subText.innerText = originalSubText;
+          document.getElementById('analyzing-overlay').classList.add('hidden');
+          showAlert("PDF 생성 도중 일부 문제가 발생했습니다. 브라우저의 [성적표 인쇄] 버튼을 클릭해 'PDF로 저장'해 주세요.");
+        });
+      }, 500);
+    }
+
+    // ==========================================
+    // MODULE: COMPONENT CONTROLLERS & GENERAL SYSTEM (기타 누락부 보완)
+    // ==========================================
+    function handlePrevPage() {
+      if (state.testProgress - 5 >= 0) {
+        state.testProgress -= 5;
+        renderTestQuestions();
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      }
+    }
+
+    function handleNextPage() {
+      const startIdx = state.testProgress;
+      const currentPageQuestions = QUESTIONS.slice(startIdx, startIdx + 5);
+      const unAnswered = currentPageQuestions.filter(q => !state.answers[q.id]);
+
+      if (unAnswered.length > 0) {
+        return showAlert("현재 단계의 모든 문항에 답변을 선택해 주세요.");
+      }
+
+      if (startIdx + 5 < QUESTIONS.length) {
+        state.testProgress += 5;
+        renderTestQuestions();
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      } else {
+        compileDiagnosticResult();
+      }
     }
   </script>
 </body>
