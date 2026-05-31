@@ -779,7 +779,7 @@
       finalScores: null,
       primaryStyle: null,
       isTrainer: false,
-      submissions: [...MOCK_SUBMISSIONS]
+      submissions: [] // Will be loaded dynamically from localStorage
     };
 
     let confirmCallback = null;
@@ -833,6 +833,57 @@
     }
 
     // ==========================================
+    // MODULE: INITIALIZATION & DATA RESTORE
+    // ==========================================
+    window.addEventListener('DOMContentLoaded', () => {
+      // Local storage restore (to persist answers offline)
+      const savedData = localStorage.getItem('cs_solution_submissions');
+      if (savedData) {
+        try {
+          state.submissions = JSON.parse(savedData);
+        } catch (e) {
+          console.error("Local Storage data corrupted, resetting to empty.");
+          state.submissions = [];
+        }
+      } else {
+        // If there's no data at all (first run), seed mock data to show rich preview charts
+        state.submissions = [...MOCK_SUBMISSIONS];
+        localStorage.setItem('cs_solution_submissions', JSON.stringify(state.submissions));
+      }
+      
+      initIntroView();
+      lucide.createIcons();
+    });
+
+    // Custom Alert Box
+    function showAlert(message) {
+      document.getElementById('custom-alert-msg').innerText = message;
+      document.getElementById('custom-alert').classList.remove('hidden');
+    }
+
+    // Close Custom Alert Box
+    function closeAlert() {
+      document.getElementById('custom-alert').classList.add('hidden');
+    }
+
+    // Custom Confirm Box
+    function showConfirm(message, callback) {
+      document.getElementById('custom-confirm-msg').innerText = message;
+      document.getElementById('custom-confirm').classList.remove('hidden');
+      confirmCallback = callback;
+      lucide.createIcons();
+    }
+
+    // Close Custom Confirm Box
+    function closeConfirm(isConfirmed) {
+      document.getElementById('custom-confirm').classList.add('hidden');
+      if (isConfirmed && confirmCallback) {
+        confirmCallback();
+      }
+      confirmCallback = null;
+    }
+
+    // ==========================================
     // MODULE: INTRO VIEW
     // ==========================================
     function initIntroView() {
@@ -860,7 +911,7 @@
     }
 
     // ==========================================
-    // MODULE: INTRO CONTROLLER (START & RESET) - FIXED & RESTORED
+    // MODULE: INTRO CONTROLLER (START & RESET)
     // ==========================================
     function handleStartTest() {
       const nameVal = document.getElementById('input-name').value.trim();
@@ -1004,7 +1055,7 @@
         state.finalScores = totals;
         state.primaryStyle = dominant;
 
-        // Save entry into local submissions state
+        // Save entry into local submissions state and make it PERSISTENT
         const newRecord = {
           name: state.userName,
           department: state.userDept,
@@ -1013,6 +1064,7 @@
           createdAt: new Date().toISOString()
         };
 
+        // Unshift to place latest on top
         state.submissions.unshift(newRecord);
         localStorage.setItem('cs_solution_submissions', JSON.stringify(state.submissions));
 
@@ -1048,7 +1100,7 @@
         const isDom = key === state.primaryStyle;
 
         const wrapper = document.createElement('div');
-        wrapper.className = `p-3.5 rounded-2xl border transition ${isDom ? 'bg-indigo-50/50 border-indigo-200' : 'bg-slate-50 border-slate-100'}`;
+        wrapper.className = `p-3.5 rounded-2xl border transition ${isDom ? 'bg-orange-50/70 border-orange-200' : 'bg-slate-50 border-slate-100'}`;
         wrapper.innerHTML = `
           <div class="flex items-center justify-between mb-2">
             <div class="flex items-center space-x-2">
@@ -1113,7 +1165,7 @@
     // MODULE: ORGANIZATIONAL STATISTICS DASHBOARD
     // ==========================================
     const computedStats = () => {
-      if (state.submissions.length === 0) {
+      if (!state.submissions || state.submissions.length === 0) {
         return {
           totalCount: 0,
           averages: { A: 0, B: 0, C: 0, D: 0, E: 0 },
@@ -1316,13 +1368,18 @@
       lucide.createIcons();
     }
 
-    // Clear All Cumulative Submissions
+    // ==========================================
+    // MODULE: DATA INITIALIZE (완전 삭제 및 빈 화면 제어)
+    // ==========================================
     function handleClearAllSubmissions() {
       showConfirm("현재까지 누적 저장된 모든 교육생의 진단 기록을 영구히 초기화하시겠습니까?", () => {
+        // Clear both in-memory state and localStorage completely
         state.submissions = [];
-        localStorage.removeItem('cs_solution_submissions');
+        localStorage.setItem('cs_solution_submissions', JSON.stringify([]));
+        
+        // Re-render dashboard with zero-state UI
         renderOrgDashboard();
-        showAlert("수집된 통계 데이터가 말끔히 초기화되었습니다.");
+        showAlert("수집된 통계 데이터가 완벽히 포맷되었습니다.");
       });
     }
 
@@ -1352,11 +1409,12 @@
         createdAt: new Date().toISOString()
       };
 
+      // Push to front of cumulative array
       state.submissions.unshift(newUser);
       localStorage.setItem('cs_solution_submissions', JSON.stringify(state.submissions));
       
       renderOrgDashboard();
-      showAlert(`${newUser.department} ${newUser.name} 님의 가상 진단 데이터가 실시간 추가되었습니다.`);
+      showAlert(`${newUser.department} ${newUser.name} 님의 가상 진단 데이터가 기존 통계에 추가 누적되었습니다.`);
     }
 
     // ==========================================
